@@ -1,0 +1,36 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+#set( $column = ':' )
+spring:
+  application:
+    name: ${microName}
+  profiles:
+    active: ${symbol_dollar}{ENVIRONMENT${column}local}
+
+---
+# --Development, preproduction and production profiles
+spring:
+  config:
+    activate:
+      on-profile: dev,pre,pro
+  cloud:
+    config:
+      fail-fast: true
+      uri: ${symbol_dollar}{SERVICE_CONFIG_URI${column}http${column}//configserver${column}8080}
+      basedir: ${symbol_dollar}{SERVICE_CONFIG_BASEDIR${column}}
+  main:
+    allow-bean-definition-overriding: true
+
+---
+# --Local
+spring:
+  config:
+    activate:
+      on-profile: local
+    additional-location: classpath${column}application.yml,classpath${column}${microName}.yml,classpath${column}application-local.yml,classpath${column}${microName}-local.yml
+  cloud:
+    config:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true

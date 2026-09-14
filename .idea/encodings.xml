@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$APPLICATION_HOME_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$APPLICATION_HOME_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-adapters/keel-adapter-auth-idp/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-adapters/keel-adapter-cache-caffeine/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-adapters/keel-adapter-rest-client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-adapters/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-adapters/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-archetype-installer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-archetype/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-common/keel-common-exceptions/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-common/keel-common-jwt/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-observability/keel-observability-logging/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-observability/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-observability/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-transport/keel-transport-auth/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-transport/keel-transport-cors/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-transport/keel-transport-session/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-transport/keel-transport-streamable-mvc/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-transport/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/keel-mcp-transport/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

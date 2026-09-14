@@ -1,0 +1,50 @@
+# ==========================================
+# Adaptador REST — servicios backend
+# Añade aqui los backend que invocan
+# las tools MCP de este servidor.
+#
+# Ejemplo:
+# services:
+#   nombre-servicio:
+#     base-url:     https://api.ejemplo.sca.es
+#     log-requests: true
+# ==========================================
+
+server:
+  ssl:
+    enabled: false
+
+sca:
+  mcp:
+    adapters:
+      rest:
+        ssl:
+          enabled: true
+          trust-store: classpath:user-truststore.jks
+          trust-store-password: 12345678
+          trust-store-type: JKS
+        # Añade aquí los backends que invocan las tools MCP de este servidor
+        # Ejemplo:
+        # services:
+        #   nombre-servicio:
+        #     base-url:     https://api.ejemplo.sca.es
+        #     log-requests: true
+        services: { }
+    transport:
+      cors:
+        enabled: true
+        allowed-origins: [ "*" ]
+        allow-credentials: false
+      auth:
+        jwt:
+          issuer: https://login.int.sca.corp/auth/realms/ssointadeslas
+          jwks-uri: https://login.int.sca.corp/auth/realms/ssointadeslas/protocol/openid-connect/certs
+
+management:
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO

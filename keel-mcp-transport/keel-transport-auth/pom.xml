@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.keelframework.mcp.transport</groupId>
+        <artifactId>keel-mcp-transport</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>keel-transport-auth</artifactId>
+    <version>${keel-transport-auth.version}</version>
+    <packaging>jar</packaging>
+    <name>Transport Auth Service</name>
+    <description>
+        HTTP authentication module for MCP transports.
+        Responsibilities:
+        - McpAuthenticationFilter: extracts the Bearer token and populates the SecurityContextHolder
+        - McpAuthenticationToken: Spring Security token with model.io.keelframework.mcp.common.jwt.Jwt as the principal
+        - TokenExtractor: converts provider.io.keelframework.mcp.common.jwt.JwtClaims into the custom model.io.keelframework.mcp.common.jwt.Jwt
+        - AuthAdapterAutoConfig: SecurityFilterChain and Spring Security beans
+        - AuthAdapterProperties: keycloak.adapter.* configuration
+        - McpAuthorizationAdvisor: AOP-based authorization by role/scope
+        Depends on adapter-auth-idp for pure JWT validation.
+    </description>
+
+    <dependencies>
+
+        <!-- ================================================ -->
+        <!-- adapter-auth-idp — validación JWT pura           -->
+        <!-- Trae transitivamente: nimbus-jose-jwt,           -->
+        <!-- spring-security-core, spring-web (provided)     -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>io.keelframework.mcp.adapters</groupId>
+            <artifactId>keel-adapter-auth-idp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.keelframework.mcp.common</groupId>
+            <artifactId>keel-common-jwt</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- Spring Security — filtros, SecurityFilterChain   -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- SPRING WEB — OncePerRequestFilter                -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- AOP — McpAuthorizationAdvisor                    -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- Observabilidad — Logging Auth                    -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>io.keelframework.mcp.observability</groupId>
+            <artifactId>keel-observability-logging</artifactId>
+        </dependency>
+
+
+        <!-- ================================================ -->
+        <!-- AUTOCONFIGURATION                                -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- ACTUATOR — métricas autenticación                -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- LOMBOK                                           -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- TEST                                             -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+
+    </dependencies>
+
+
+</project>

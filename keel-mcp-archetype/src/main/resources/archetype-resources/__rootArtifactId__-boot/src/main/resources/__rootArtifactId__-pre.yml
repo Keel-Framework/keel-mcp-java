@@ -1,0 +1,32 @@
+# ==========================================
+# Adaptador REST — servicios backend
+# Añade aqui los backend que invocan
+# las tools MCP de este servidor.
+#
+# Ejemplo:
+# services:
+#   nombre-servicio:
+#     base-url:     https://api.ejemplo.sca.es
+#     log-requests: true
+# ==========================================
+
+
+keel:
+  mcp:
+    adapters:
+      rest-client:
+        # Añade aquí los backends que invocan las tools MCP de este servidor
+        # Ejemplo:
+        # services:
+        #   nombre-servicio:
+        #     base-url:     https://api.ejemplo.sca.es
+        #     log-requests: true
+        services: { }
+    transport:
+      cors:
+        enabled: false          # cada proyecto lo activa según necesite
+        allowed-origins: [ ]    # obligatorio si enabled=true
+
+logging:
+  level:
+    root: INFO

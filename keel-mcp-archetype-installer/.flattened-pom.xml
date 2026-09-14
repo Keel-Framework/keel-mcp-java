@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.keelframework.mcp</groupId>
+    <artifactId>keel-mcp-java</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  <artifactId>keel-mcp-archetype-installer</artifactId>
+  <version>1.0.0</version>
+  <name>MCP Archetype Installer</name>
+  <description>CLI installer for "mvn archetype:generate" for mcp-server-archetype with simplified parameters: artifactId, domain, transport, appVersion.</description>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <properties>
+    <maven.compiler.target>25</maven.compiler.target>
+    <maven.compiler.source>25</maven.compiler.source>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <mcp.archetype.version>1.0.0</mcp.archetype.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>io.keelframework.mcp</groupId>
+      <artifactId>keel-mcp-archetype</artifactId>
+      <version>${keel-mcp-archetype.version}</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>archetype.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>archetype.properties</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <mainClass>io.keelframework.mcp.develop.archetype.MvnArchetype</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0          http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>4.0.6</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>io.keelframework.mcp</groupId>
+  <artifactId>keel-mcp-java</artifactId>
+  <description>Keel MCP Java architecture framework and component aggregator.</description>
+  <packaging>pom</packaging>
+  <version>${revision}</version>
+
+  <properties>
+    <java.version>25</java.version>
+    <maven.compiler.source>25</maven.compiler.source>
+    <maven.compiler.target>25</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <revision>1.0.0</revision>
+
+    <!-- Independent versions for each publishable module, with a component-specific lifecycle -->    <keel-observability-logging.version>1.0.0</keel-observability-logging.version>
+    <keel-adapter-rest-client.version>1.0.0</keel-adapter-rest-client.version>
+    <keel-adapter-auth-idp.version>1.0.0</keel-adapter-auth-idp.version>
+    <keel-adapter-cache-caffeine.version>1.0.0</keel-adapter-cache-caffeine.version>
+    <keel-transport-auth.version>1.0.0</keel-transport-auth.version>
+    <keel-transport-cors.version>1.0.0</keel-transport-cors.version>
+    <keel-transport-session.version>1.0.0</keel-transport-session.version>
+    <keel-transport-streamable-mvc.version>1.0.0</keel-transport-streamable-mvc.version>
+    <keel-common-exceptions.version>1.0.0</keel-common-exceptions.version>
+    <keel-common-jwt.version>1.0.0</keel-common-jwt.version>
+    <keel-mcp-archetype.version>1.0.0</keel-mcp-archetype.version>
+    <keel-mcp-archetype-installer.version>1.0.0</keel-mcp-archetype-installer.version>
+
+    <!-- Standard Architect versions -->
+    <spring-boot.version>4.0.6</spring-boot.version>
+    <!-- Spring Cloud -->
+    <spring-cloud.version>2025.1.2</spring-cloud.version>
+    <!-- Spring AI -->
+    <spring-ai.version>2.0.0-M6</spring-ai.version>
+    <!-- Transport -->
+    <caffeine.version>3.2.0</caffeine.version>
+    <nimbus-jose-jwt.version>9.37.3</nimbus-jose-jwt.version>
+    <!--Security -->
+    <spring-security.version>6.5.0</spring-security.version>
+    <!-- Adapters -->
+    <httpclient5.version>5.3.1</httpclient5.version>
+    <postgresql.version>42.7.1</postgresql.version>
+
+    <!-- Aspectj AOP -->
+    <aspectjweaver.version>1.9.22</aspectjweaver.version>
+    <!-- Utilidades -->
+    <!-- Lombok 1.18.36+ soporta Java 25 -->
+    <lombok.version>1.18.40</lombok.version>
+    <mapstruct.version>1.5.5.Final</mapstruct.version>
+    <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+    <!-- Maven plugins -->
+    <!-- 3.13.0 — compatible con Java 25 + Maven 3.8.x -->
+    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+    <!-- Test -->
+    <testcontainers.version>1.19.3</testcontainers.version>
+    <wiremock.version>3.3.1</wiremock.version>
+  </properties>
+
+  <!-- ORDEN DE COMPILACIÓN -->
+  <modules>
+    <module>keel-mcp-common</module>
+    <module>keel-mcp-adapters</module>
+    <module>keel-mcp-transport</module>
+    <module>keel-mcp-archetype</module>
+    <module>keel-mcp-observability</module>
+    <module>keel-mcp-archetype-installer</module>
+  </modules>
+
+  <!-- ============================================ -->
+  <!-- SIN <dependencies> en el BOM raíz           -->
+  <!-- Solo <dependencyManagement>                  -->
+  <!-- ============================================ -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- Spring Cloud BOM -->
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Spring AI BOM -->
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-bom</artifactId>
+        <version>${spring-ai.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- ── Exclusión de Logback — añade DESPUÉS del import del BOM ──────── -->
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
+        <version>${spring-ai.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-starter-mcp-server-webflux</artifactId>
+        <version>${spring-ai.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+
+      <!-- Starters que los módulos hijos usan sin versión -->
+      <!-- AOP
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-aop</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>-->
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-autoconfigure</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-configuration-processor</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-cache</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-log4j2</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+      <!-- Testcontainers BOM -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- ====================================== -->
+      <!-- MÓDULOS INTERNOS                       -->
+      <!-- ====================================== -->
+      <!--  Módulos JAR que otros proyectos sí pueden usar como dependencia -->
+      <dependency>
+        <groupId>io.keelframework.mcp.adapters</groupId>
+        <artifactId>keel-adapter-auth-idp</artifactId>
+        <version>${keel-adapter-auth-idp.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.keelframework.mcp.transport</groupId>
+        <artifactId>keel-transport-auth</artifactId>
+        <version>${keel-transport-auth.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.keelframework.mcp.transport</groupId>
+        <artifactId>keel-transport-cors</artifactId>
+        <version>${keel-transport-cors.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.keelframework.mcp.transport</groupId>
+        <artifactId>keel-transport-session</artifactId>
+        <version>${keel-transport-session.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.keelframework.mcp.transport</groupId>
+        <artifactId>keel-transport-streamable-mvc</artifactId>
+        <version>${keel-transport-streamable-mvc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.keelframework.mcp.adapters</groupId>
+        <artifactId>keel-adapter-cache-caffeine</artifactId>
+        <version>${keel-adapter-cache-caffeine.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.keelframework.mcp.adapters</groupId>
+        <artifactId>keel-adapter-rest-client</artifactId>
+        <version>${keel-adapter-rest-client.version}</version>
+      </dependency>
+
+      <!-- ====================================== -->
+      <!-- COMMONS                              -->
+      <!-- ====================================== -->
+
+      <dependency>
+        <groupId>io.keelframework.mcp.common</groupId>
+        <artifactId>keel-common-exceptions</artifactId>
+        <version>${keel-common-exceptions.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.keelframework.mcp.common</groupId>
+        <artifactId>keel-common-jwt</artifactId>
+        <version>${keel-common-jwt.version}</version>
+      </dependency>
+
+      <!-- ====================================== -->
+      <!-- TRANSPORT                              -->
+      <!-- ====================================== -->
+      <dependency>
+        <groupId>com.github.ben-manes.caffeine</groupId>
+        <artifactId>caffeine</artifactId>
+        <version>${caffeine.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.nimbusds</groupId>
+        <artifactId>nimbus-jose-jwt</artifactId>
+        <version>${nimbus-jose-jwt.version}</version>
+      </dependency>
+      <!-- ====================================== -->
+      <!-- ADAPTERS REST                          -->
+      <!-- ====================================== -->
+      <dependency>
+        <groupId>org.apache.httpcomponents.client5</groupId>
+        <artifactId>httpclient5</artifactId>
+        <version>${httpclient5.version}</version>
+      </dependency>
+      <!-- ====================================== -->
+      <!-- ADAPTERS JDBC                          -->
+      <!-- ====================================== -->
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${postgresql.version}</version>
+      </dependency>
+      <!-- ====================================== -->
+      <!-- OBSERVABILITY                          -->
+      <!-- ====================================== -->
+      <dependency>
+        <groupId>io.keelframework.mcp.observability</groupId>
+        <artifactId>keel-observability-logging</artifactId>
+        <version>${keel-observability-logging.version}</version>
+      </dependency>
+
+      <!-- ================================================ -->
+      <!-- OAUTH2 RESOURCE SERVER — Spring Boot 4.0         -->
+      <!-- Nuevo nombre en Boot 4.x                         -->
+      <!--
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+      </dependency>
+      -->
+      <!-- ================================================ -->
+
+      <!-- ====================================== -->
+      <!-- UTILIDADES                             -->
+      <!-- ====================================== -->
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+        <optional>true</optional>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${mapstruct.version}</version>
+      </dependency>
+      <!-- ====================================== -->
+      <!-- TEST                                   -->
+      <!-- ====================================== -->
+      <dependency>
+        <groupId>org.wiremock</groupId>
+        <artifactId>wiremock-standalone</artifactId>
+        <version>${wiremock.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <!-- ================================== -->
+        <!-- Versión  compatible       -->
+        <!-- ================================== -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+            <annotationProcessorPaths>
+              <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+              </path>
+              <path>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+              </path>
+            </annotationProcessorPaths>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

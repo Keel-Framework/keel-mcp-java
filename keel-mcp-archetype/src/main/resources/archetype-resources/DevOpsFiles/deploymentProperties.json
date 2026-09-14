@@ -1,0 +1,52 @@
+{
+  "podParameters": {
+    "active": true,
+    "values": {
+      "dev": {
+        "CPU_LIMIT": "500m",
+        "CPU": "100m",
+        "MEMORY_LIMIT": "512Mi",
+        "MEMORY": "256Mi",
+        "REPLICAS": "1"
+      },
+      "pre": {
+        "CPU_LIMIT": "500m",
+        "CPU": "100m",
+        "MEMORY_LIMIT": "512Mi",
+        "MEMORY": "256Mi",
+        "REPLICAS": "1"
+      },
+      "pro": {
+        "CPU_LIMIT": "500m",
+        "CPU": "100m",
+        "MEMORY_LIMIT": "512Mi",
+        "MEMORY": "256Mi",
+        "REPLICAS": "2"
+      }
+    }
+  },
+  "readinessProbe": {
+    "active": true,
+    "values": {
+      "PATH": "/app/health",
+      "PORT": "8080",
+      "INITIALDELAYSECONDS": "150",
+      "TIMEOUTSECONDS": "5"
+    }
+  },
+  "livenessProbe": {
+    "active": true,
+    "values": {
+      "PATH": "/app/health",
+      "PORT": "8080",
+      "INITIALDELAYSECONDS": "150",
+      "PERIODSECONDS": "100",
+      "SUCCESSTHRESHOLD": "1",
+      "FAILURETHRESHOLD": "3",
+      "TIMEOUTSECONDS": "10"
+    }
+  },
+  "DEPLOYMENT_PORT": "8080",
+  "SERVICE_TYPE": "ClusterIP",
+  "ROUTE_PROXY": "haproxy.router.openshift.io/timeout: 400s"
+}

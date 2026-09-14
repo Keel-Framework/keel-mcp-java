@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor
+        xmlns="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0
+        https://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd"
+        name="mcp-server-archetype">
+
+    <requiredProperties>
+
+        <requiredProperty key="artifactId">
+            <defaultValue>${microName}</defaultValue>
+        </requiredProperty>
+
+        <!-- Versión del artefacto Maven generado (raíz + módulos). Property
+             estándar de Maven Archetype: no necesita defaultValue propio,
+             el propio maven-archetype-plugin ya tiene "1.0-SNAPSHOT" como
+             fallback interno si no se pasa -Dversion explícito. -->
+        <requiredProperty key="version"/>
+
+        <!-- Código corto en minúsculas, sin guiones — usado para construir
+             groupId y package. Se calcula en Java (MvnArchetype.sanitizeForPackage)
+             a partir de microName y se pasa SIEMPRE explícito vía -Dmicro=. -->
+        <requiredProperty key="micro">
+            <validationRegex>^[a-z0-9]*$</validationRegex>
+        </requiredProperty>
+
+        <!-- Nombre legible del micro (puede llevar guiones/mayúsculas).
+             OBLIGATORIO: sin defaultValue — si no se informa, el generate
+             falla en vez de crear un proyecto con nombre por defecto. -->
+        <requiredProperty key="microName">
+            <validationRegex>^[a-zA-Z0-9\-]*$</validationRegex>
+        </requiredProperty>
+
+        <!-- Código corto en minúsculas, sin guiones — usado para construir
+             groupId y package. Se calcula en Java a partir de domainName y
+             se pasa SIEMPRE explícito vía -Ddomain=. -->
+        <requiredProperty key="domain">
+            <validationRegex>^[a-z0-9]*$</validationRegex>
+        </requiredProperty>
+
+        <!-- Nombre legible del dominio de negocio  -->
+        <requiredProperty key="domainName">
+            <validationRegex>^[a-zA-Z0-9\-]*$</validationRegex>
+        </requiredProperty>
+
+        <!-- groupId y package declarados DESPUÉS de domain y micro, ya que
+             dependen de ambos. IMPORTANTE: maven-archetype-plugin NO evalúa
+             llamadas a métodos (ej. .replace('-','')) dentro de un
+             defaultValue — solo sustitución simple de variables. Por eso
+             estos defaultValue son solo fallback para modo interactivo; en
+             la práctica SIEMPRE se pasan -DgroupId=... y -Dpackage=...
+             explícitos desde MvnArchetype.java, calculados a partir de
+             domain/micro ya normalizados (sin guiones, en minúsculas).
+             groupId y package comparten el mismo valor por convención. -->
+        <requiredProperty key="groupId">
+            <defaultValue>io.keelframework.mcp.${domain}.${micro}</defaultValue>
+        </requiredProperty>
+
+        <requiredProperty key="package">
+            <defaultValue>${groupId}</defaultValue>
+        </requiredProperty>
+
+        <requiredProperty key="transport">
+            <defaultValue>mvc</defaultValue>    <!--  mvc o webflux  -->
+        </requiredProperty>
+
+    </requiredProperties>
+
+    <fileSets>
+
+        <!-- pom.xml raíz (agregador, packaging=pom, <modules>) -->
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory></directory>
+            <includes>
+                <include>pom.xml</include>
+            </includes>
+        </fileSet>
+
+
+        <!-- Despliegue: manifiesto genérico, properties y Dockerfile en la raíz del proyecto generado -->
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory></directory>
+            <includes>
+                <include>deploymentGeneric.yaml</include>
+                <include>deploymentProperties.properties</include>
+                <include>Dockerfile</include>
+            </includes>
+        </fileSet>
+
+        <!-- DevOps: parámetros de despliegue y del pipeline -->
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>DevOpsFiles</directory>
+            <includes>
+                <include>*.json</include>
+            </includes>
+        </fileSet>
+
+        <!-- ===================== Módulo boot ===================== -->
+
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>__rootArtifactId__-boot</directory>
+            <includes>
+                <include>pom.xml</include>
+            </includes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+            <directory>__rootArtifactId__-boot/src/main/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>__rootArtifactId__-boot/src/main/resources</directory>
+            <includes>
+                <include>**/*.yml</include>
+                <include>**/*.yaml</include>
+                <include>**/*.properties</include>
+            </includes>
+        </fileSet>
+
+        <!-- JKS —   -->
+        <fileSet filtered="false" encoding="UTF-8">
+            <directory>__rootArtifactId__-boot/src/main/resources</directory>
+            <includes>
+                <include>**/*.jks</include>
+            </includes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+            <directory>__rootArtifactId__-boot/src/test/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+
+        <!-- ===================== Módulo mcp ===================== -->
+
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>__rootArtifactId__-mcp</directory>
+            <includes>
+                <include>pom.xml</include>
+            </includes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+            <directory>__rootArtifactId__-mcp/src/main/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+            <directory>__rootArtifactId__-mcp/src/test/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+
+        <!-- ===================== Módulo Model ===================== -->
+
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>__rootArtifactId__-model</directory>
+            <includes>
+                <include>pom.xml</include>
+            </includes>
+        </fileSet>
+
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+            <directory>__rootArtifactId__-model/src/main/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+
+</archetype-descriptor>

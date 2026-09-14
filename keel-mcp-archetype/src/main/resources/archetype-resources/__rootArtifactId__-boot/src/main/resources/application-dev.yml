@@ -1,0 +1,8 @@
+server:
+  ssl:
+    enabled: false   # TLS termina en la route de OpenShift
+
+management:
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.keelframework.mcp.adapters</groupId>
+        <artifactId>keel-mcp-adapters</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>keel-adapter-cache-caffeine</artifactId>
+    <version>${keel-adapter-cache-caffeine.version}</version>
+    <packaging>jar</packaging>
+    <name>Cache Caffeine Service</name>
+    <description>
+        Servicio de cache estándar basado en Cafeína.
+    </description>
+
+    <dependencies>
+
+        <!-- ============================================ -->
+        <!-- CACHE — Spring Cache + Cafeína               -->
+        <!-- Spring Boot autoconfigura CacheManager       -->
+        <!-- Cafeína provee TTL, maxSize, métricas        -->
+        <!-- ============================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <!-- ============================================ -->
+        <!-- ACTUATOR — métricas automáticas Cafeína      -->
+        <!-- recordStats() expone hits/misses/evictions   -->
+        <!-- ============================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- ============================================ -->
+        <!-- AUTOCONFIGURATION                            -->
+        <!-- Autocompletado IDE en application.yml        -->
+        <!-- ============================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- ============================================ -->
+        <!-- LOMBOK                                       -->
+        <!-- ============================================ -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- ============================================ -->
+        <!-- TEST                                         -->
+        <!-- ============================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

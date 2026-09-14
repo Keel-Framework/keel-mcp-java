@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <parent>
+        <groupId>io.keelframework.mcp.adapters</groupId>
+        <artifactId>keel-mcp-adapters</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+
+    <artifactId>keel-adapter-auth-idp</artifactId>
+    <version>${keel-adapter-auth-idp.version}</version>
+    <packaging>jar</packaging>
+    <name>Adapter Auth Idp</name>
+    <description>
+        Librería de validación JWT pura — sin Spring Security, sin filtros HTTP.
+        Responsabilidades:
+        - Descargar y cachear JWKS de RedHat SSO (JwksRemoteLoader, JwksKeyResolver)
+        - Validar firma, expiración, issuer y audience del JWT (TokenValidator)
+        - Modelos propios: model.io.keelframework.mcp.common.jwt.Jwt, model.io.keelframework.mcp.common.jwt.Role, model.io.keelframework.mcp.common.jwt.Scope, model.io.keelframework.mcp.common.jwt.Authority, provider.io.keelframework.mcp.common.jwt.JwtClaims
+        No depende de transport-auth-service ni de ningún módulo de transport.
+    </description>
+
+    <dependencies>
+
+
+        <!-- ================================================ -->
+        <!-- Nimbus JOSE+JWT — parsing y validación JWT       -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- Spring Web — RestClient para descarga JWKS       -->
+        <!-- Solo necesario en runtime del adaptador          -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- Spring Security — GrantedAuthority (model.io.keelframework.mcp.common.jwt.Authority)   -->
+        <!-- Solo el contrato, sin autoconfiguración          -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- Lombok                                           -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- Test                                             -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- COMMONS JWT                                             -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>io.keelframework.mcp.common</groupId>
+            <artifactId>keel-common-jwt</artifactId>
+        </dependency>
+
+
+    </dependencies>
+
+</project>

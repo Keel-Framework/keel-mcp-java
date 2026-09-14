@@ -1,0 +1,153 @@
+package io.keelframework.mcp.adapters.auth.idp.jwks;
+
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.SignedJWT;
+import lombok.extern.slf4j.Slf4j;
+
+import java.security.interfaces.RSAPublicKey;
+import java.text.ParseException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
+/**
+ * Resuelve RSAPublicKey a partir del kid del header JWT.
+ * Caché interna propia  Implementada con ConcurrentHashMap + TTL por entrada.
+ */
+@Slf4j
+public class JwksKeyResolver {
+
+    private final JwksRemoteLoader remoteLoader;
+    private final String jwksUri;
+    private final Duration ttl;
+
+    /** Caché principal: kid → clave pública */
+    private final ConcurrentHashMap<String, RSAPublicKey> keyCache = new ConcurrentHashMap<>();
+
+    /** TTL por entrada: kid → instante de expiración */
+    private final ConcurrentHashMap<String, Instant> expiryCache = new ConcurrentHashMap<>();
+
+    /** Lock por kid para evitar stampede en cache miss simultáneo */
+    private final ConcurrentHashMap<String, ReentrantLock> locks = new ConcurrentHashMap<>();
+
+    public JwksKeyResolver(JwksRemoteLoader remoteLoader, String jwksUri, Duration ttl) {
+        this.remoteLoader = remoteLoader;
+        this.jwksUri = jwksUri;
+        this.ttl = ttl;
+    }
+
+    /**
+     * Dado un JWT raw, extrae el kid del header y resuelve la RSAPublicKey.
+     *
+     * @param rawJwt token JWT en formato compacto
+     * @return RSAPublicKey para verificar la firma
+     * @throws JwksKeyResolutionException si el kid no existe o no se puede resolver
+     */
+    public RSAPublicKey resolve(String rawJwt) {
+        String kid = extractKid(rawJwt);
+        log.debug("Resolving public key for kid: {}", kid);
+
+        return resolveByKid(kid)
+                .orElseThrow(() -> new JwksKeyResolutionException(
+                        "No public key found for kid: " + kid));
+    }
+
+    private Optional<RSAPublicKey> resolveByKid(String kid) {
+        // Lectura sin bloqueo — caso más frecuente
+        if (isCached(kid)) {
+            log.debug("Cache HIT for kid: {}", kid);
+            return Optional.of(keyCache.get(kid));
+        }
+
+        // Cache MISS — bloqueo por kid para evitar stampede
+        ReentrantLock lock = locks.computeIfAbsent(kid, k -> new ReentrantLock());
+        lock.lock();
+        try {
+            // Double-check: otro hilo puede haberlo cargado mientras esperábamos
+            if (isCached(kid)) {
+                log.debug("Cache HIT after lock for kid: {}", kid);
+                return Optional.of(keyCache.get(kid));
+            }
+
+            log.debug("Cache MISS for kid: {}. Loading from remote: {}", kid, jwksUri);
+            loadAndCacheAll();
+
+            RSAPublicKey resolved = keyCache.get(kid);
+            if (resolved == null) {
+                log.warn("kid '{}' not found in JWKS after remote load", kid);
+                return Optional.empty();
+            }
+            return Optional.of(resolved);
+
+        } finally {
+            lock.unlock();
+            locks.remove(kid); // Limpiar lock para no acumular entradas
+        }
+    }
+
+    private boolean isCached(String kid) {
+        Instant expiry = expiryCache.get(kid);
+        if (expiry == null || Instant.now().isAfter(expiry)) {
+            // Expirado — limpiar entrada
+            if (expiry != null) {
+                log.debug("Cache EXPIRED for kid: {}", kid);
+                keyCache.remove(kid);
+                expiryCache.remove(kid);
+            }
+            return false;
+        }
+        return keyCache.containsKey(kid);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void loadAndCacheAll() {
+        JWKSet jwkSet = remoteLoader.load(jwksUri);
+        Instant expiry = Instant.now().plus(ttl);
+
+        jwkSet.getKeys().stream()
+                .filter(k -> k instanceof RSAKey)
+                .map(k -> (RSAKey) k)
+                .forEach(rsaKey -> {
+                    try {
+                        RSAPublicKey publicKey = rsaKey.toRSAPublicKey();
+                        keyCache.put(rsaKey.getKeyID(), publicKey);
+                        expiryCache.put(rsaKey.getKeyID(), expiry);
+                        log.debug("Cached RSA key kid: {} expires at: {}", rsaKey.getKeyID(), expiry);
+                    } catch (Exception e) {
+                        log.warn("Could not extract RSA public key for kid: {}", rsaKey.getKeyID(), e);
+                    }
+                });
+
+        log.info("JWKS loaded and cached. Keys: {}. TTL: {}", jwkSet.getKeys().size(), ttl);
+    }
+
+    private String extractKid(String rawJwt) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(rawJwt);
+            String kid = signedJWT.getHeader().getKeyID();
+            if (kid == null || kid.isBlank()) {
+                throw new JwksKeyResolutionException("JWT header missing 'kid' claim");
+            }
+            return kid;
+        } catch (ParseException e) {
+            throw new JwksKeyResolutionException("Failed to parse JWT for kid extraction", e);
+        }
+    }
+
+    /** Invalida toda la caché forzando recarga en la siguiente petición. */
+    public void invalidateAll() {
+        keyCache.clear();
+        expiryCache.clear();
+        log.info("JWKS internal cache invalidated");
+    }
+
+    public int cachedKeyCount() {
+        return keyCache.size();
+    }
+
+
+
+}
