@@ -20,38 +20,42 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Modelo propio del adaptador que representa al usuario autenticado por Keycloak.
- * Es un record inmutable construido a partir de los claims del JWT validado.
+ * Adapter-specific model representing the user authenticated by Keycloak.
+ * This is an immutable record built from the claims of the validated JWT.
  */
 public record Jwt(
-        /** sub claim — identificador único del usuario en Keycloak */
-        String subject,
 
-        /** client_id claim — identifica al cliente OAuth2 que solicitó
-         *  el token. Es el identificador fiable para tokens
-         *  client_credentials, donde "subject" es null. */
-        String clientId,
+    /** sub claim — unique user identifier in Keycloak */
+    String subject,
 
-        /** preferred_username claim */
-        String username,
+    /**
+     * client_id claim — identifies the OAuth2 client that requested
+     * the token. This is the reliable identifier for
+     * client_credentials tokens, where "subject" is null.
+     */
+    String clientId,
 
-        /** email claim */
-        String email,
+    /** preferred_username claim */
+    String username,
 
-        /** Roles de realm extraídos de realm_access.roles */
-        Set<Role> realmRoles,
+    /** email claim */
+    String email,
 
-        /** Scopes extraídos del claim scope (espacio-separados) */
-        Set<Scope> scopes,
+    /** Realm roles extracted from realm_access.roles */
+    Set<Role> realmRoles,
 
-        /** Issuer del token — URL del realm de Keycloak */
-        String issuer,
+    /** Scopes extracted from the space-separated scope claim */
+    Set<Scope> scopes,
 
-        /** JWT Audience claim — aud claim */
-        List<String> audience,
+    /** Token issuer — Keycloak realm URL */
+    String issuer,
 
-        /** Expiración del token — exp claim, para auditoría de seguridad */
-        Instant expiresAt
+    /** JWT Audience claim — aud claim */
+    List<String> audience,
+
+    /** Token expiration — exp claim, for security auditing */
+    Instant expiresAt
+
 
 ) {
 

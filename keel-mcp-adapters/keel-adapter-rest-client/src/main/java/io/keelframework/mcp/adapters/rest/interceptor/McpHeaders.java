@@ -18,78 +18,63 @@ package io.keelframework.mcp.adapters.rest.interceptor;
 import java.util.List;
 
 /**
- * Headers estandar SCA para propagacion entre MCP Server y Microservicios.
+ * Standard KeelFramework headers for propagation between the MCP Server and microservices.
  *
- * INTERNOS del ecosistema — no configurables por el desarrollador.
- * Definidos por el equipo de arquitectura SCA como estandar obligatorio.
+ * INTERNAL to the ecosystem — not configurable by the developer.
+ * Defined by the SCA Architecture team as a mandatory standard.
  *
- * Estos headers se propagan automaticamente en cada peticion HTTP saliente
- * del adaptador REST hacia los microservicios backend.
+ * These headers are automatically propagated on every outbound HTTP request
+ * from the REST adapter to backend microservices.
  *
- * El interceptor McpHeadersInterceptor los gestiona de forma transparente.
+ * McpHeadersInterceptor manages them transparently.
  */
 
 public final class McpHeaders {
 
-    // No instanciable — solo constantes
     private McpHeaders() {}
 
     // ================================================
-    // JWT — siempre propagado
+    // JWT — always propagated
     // ================================================
-
     /**
-     * Header de autenticacion JWT.
-     * Propagado SIEMPRE desde el SecurityContextHolder.
-     * Valor: "Bearer <jwt-token>"
+     * JWT authentication header.
+     * ALWAYS propagated from the SecurityContextHolder.
+     * Value: "Bearer <jwt-token>"
      */
     public static final String AUTHORIZATION = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
 
     // ================================================
-    // HEADERS DE PROPAGACION SCA
-    // Estandar de arquitectura — no modificables
+    // SCA PROPAGATION HEADERS
+    // Architecture standard — not configurable
     // ================================================
-
     /**
-     * Canal de origen de la peticion.
-     * Ejemplo: WEB, MOBILE, API, BATCH
+     * Request source channel.
+     * Example: WEB, MOBILE, API, BATCH
      */
     public static final String CHANNEL = "channel";
 
     /**
-     * Identificador de la origen del request.
-     * Ejemplo: mcp-server-poc, mcp-server-pagos
+     * Request origin identifier.
      */
     public static final String LOCALE = "locale";
 
     /**
-     * Identificador de la aplicacion origen.
-     * Ejemplo: mcp-server-poc, mcp-server-pagos
+     * Origin application identifier.
      */
     public static final String APPLICATION_ID = "applicationid";
 
 
     /**
-     * Identificador de traza distribuida.
-     * Compatible con OpenTelemetry / Jaeger / Zipkin.
+     * Distributed trace identifier.
      */
     public static final String TRACE_ID = "traceid";
 
     /**
-     * Identificador del span actual en la traza.
+     * Current span identifier within the trace.
      */
     public static final String SPAN_ID = "spanid";
 
-    /**
-     * Identificador del dispositivo del cliente.
-     * Ejemplo: DESKTOP, MOBILE, TABLET
-     */
-    public static final String X_ADESLAS_DEVICE = "x-adeslas-device";
-
-    public static final String X_ADESLAS_UUID = "x-adeslas-uuid";
-
-    public static final String X_IBM_CLIENT_ID = "x-ibm-client-id";
 
     /**
      * Lista ordenada de headers a propagar en cada request saliente.
@@ -102,10 +87,7 @@ public final class McpHeaders {
             CHANNEL,
             APPLICATION_ID,
             TRACE_ID,
-            SPAN_ID,
-            X_ADESLAS_DEVICE,
-            X_ADESLAS_UUID,
-            X_IBM_CLIENT_ID
+            SPAN_ID
     );
 
 }

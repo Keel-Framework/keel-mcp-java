@@ -19,31 +19,30 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 /**
- * Propiedades SSL del cliente HTTP saliente (RestClient).
+ * SSL properties for the outbound HTTP client (RestClient).
  *
- * sca:
- *   mcp:
- *     adapters:
- *       rest:
- *         ssl:
- *           enabled:              true
- *           trust-store:          classpath:ssl/truststore.jks
- *           trust-store-password: ${TRUSTSTORE_PASSWORD:changeit}
- *           trust-store-type:     JKS
+ * keel:
+ *   adapters:
+ *     rest-client:
+ *       ssl:
+ *         enabled:              true
+ *         trust-store:          classpath:ssl/truststore.jks
+ *         trust-store-password: ${TRUSTSTORE_PASSWORD:changeit}
+ *         trust-store-type:     JKS
  */
 @ConfigurationProperties(prefix = "keel.adapters.rest-client.ssl")
 public record SslProperties(
 
-        /** Activa SSL/TLS en el cliente HTTP. Default: false */
+        /** Enables SSL/TLS on the HTTP client. Default: false */
         @DefaultValue("false") boolean enabled,
 
-        /** Ruta al truststore con certificados corporativos. */
+        /** Path to the truststore containing corporate certificates. */
         String trustStore,
 
         /** Password del truststore. Default: changeit */
         @DefaultValue("changeit") String trustStorePassword,
 
-        /** Tipo del truststore. Default: JKS */
+        /** Truststore type. Default: JKS */
         @DefaultValue("JKS") String trustStoreType
 
 ) {}

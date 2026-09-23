@@ -22,35 +22,34 @@ import java.time.Duration;
 public record CacheServiceProperties(
 
     /*
-     * TTL tras escritura, entrada expira aunque se acceda.
-     * Default: 10 minutos
-     */
+    * TTL after write; the entry expires even if it is accessed.
+    * Default: 10 minutes
+    */
     Duration expireAfterWrite,
 
     /*
-     * TTL tras último acceso. renueva con cada lectura —
-     * Utilizado para las sesiones de MCP .
-     * Default: 10 minutos
-     */
+    * TTL after last access. Renewed on each read —
+    * Used for MCP sessions.
+    * Default: 10 minutes
+    */
     Duration expireAfterAccess,
 
-
     /*
-     * Máximo de entradas en cache, cuando se supera Cafeína elimina las menos usadas (LRU).
-     * Default: 1000
-     */
+    * Maximum number of cache entries. When exceeded, Caffeine evicts the least recently used entries (LRU).
+    * Default: 1000
+    */
     long maximumSize,
 
-    /*
-     * Activa estadísticas de Cafeína, será expuesta para Micrometer — hits, misses, evictions.
+     /*
+     * Enables Caffeine statistics, which are exposed through Micrometer — hits, misses, evictions.
      * Default: true
      */
     boolean recordStats,
 
     /*
-     * Activa logging de eventos del ciclo de vida.
-     * Default: false
-     */
+    * Enables logging of lifecycle events.
+    * Default: false
+    */
     boolean logLifecycleEvents
 ){
     public CacheServiceProperties{

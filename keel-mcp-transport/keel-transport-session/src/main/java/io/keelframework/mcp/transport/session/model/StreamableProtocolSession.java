@@ -28,7 +28,7 @@ public record StreamableProtocolSession(
 ) implements ProtocolSession {
 
     /**
-     * Crea una nueva sesión Streamable activa.
+     * Creates a new active Streamable session.
      */
     public static StreamableProtocolSession create(
             String sessionId,
@@ -47,7 +47,7 @@ public record StreamableProtocolSession(
     }
 
     /**
-     * Actualiza el JWT manteniendo el resto de campos inmutables.
+     * Updates the JWT while keeping the remaining fields immutable.
      */
     public StreamableProtocolSession withJwt(String newJwt) {
         return new StreamableProtocolSession(
@@ -61,7 +61,7 @@ public record StreamableProtocolSession(
         );
     }
     /**
-     * Renueva actividad y actualiza JWT en una sola operación.
+     * Renews activity and updates the JWT in a single operation.
      */
     public StreamableProtocolSession renewActivityAndJwt(String newJwt) {
         Instant now = Instant.now();
@@ -83,8 +83,8 @@ public record StreamableProtocolSession(
     }
 
     /**
-     * Renueva la actividad de la sesión.
-     * Retorna un nuevo record con lastActivityAt actualizado.
+     * Renews session activity.
+     * Returns a new record with the updated lastActivityAt.
      */
     @Override
     public ProtocolSession renewActivity() {
@@ -100,8 +100,8 @@ public record StreamableProtocolSession(
     }
 
     /**
-     * Termina la sesión.
-     * Retorna un nuevo record con status TERMINATED.
+     * Terminates the session.
+     * Returns a new record with status TERMINATED.
      */
     @Override
     public ProtocolSession terminate() {

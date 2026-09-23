@@ -27,17 +27,17 @@ import java.time.Instant;
 import java.util.Optional;
 
 /**
- * Gestor del ciclo de vida de sesiones de transporte MCP.
+ * MCP transport session lifecycle manager.
  *
- * Responsabilidades:
- * - Validar sesión en cada invocación de tool
- * - Renovar TTL con cada actividad
- * - Destruir sesión en desconexión
+ * Responsibilities:
+ * - Validate the session on each tool invocation
+ * - Renew the TTL on each activity
+ * - Destroy the session on disconnect
  *
- * Agnóstico del protocolo via métodos de fábrica específicos por tipo.
+ * Protocol-agnostic through protocol-specific factory methods.
  *
- * La persistencia delega en TransportSessionRepository
- * que usa CacheServiceManager de cache-service.jar.
+ * Persistence is delegated to TransportSessionRepository,
+ * which uses CacheServiceManager from cache-service.jar.
  */
 public final class SessionManager
         implements SessionManagerPort {

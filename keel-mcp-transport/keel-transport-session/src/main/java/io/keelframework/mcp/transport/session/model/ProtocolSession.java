@@ -18,8 +18,8 @@ package io.keelframework.mcp.transport.session.model;
 import java.time.Instant;
 
 /**
- * Contrato común para cualquier sesión de transporte MCP.
-*/
+ * Common contract for any MCP transport session.
+ */
 
 public sealed interface ProtocolSession
         permits

@@ -31,15 +31,15 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
- * Advice AOP que intercepta métodos anotados con {@literal @}McpAuthorized
- * y verifica que el usuario autenticado tenga los roles y scopes requeridos.
+ * AOP advice that intercepts methods annotated with {@literal @}McpAuthorized
+ * and verifies that the authenticated user has the required roles and scopes.
  *
- * Precondición: el SecurityContext ya tiene un McpAuthenticationToken
- * establecido por McpAuthenticationFilter. Si no hay autenticación,
- * se lanza AccessDeniedException.
+ * Precondition: the SecurityContext already contains a McpAuthenticationToken
+ * established by McpAuthenticationFilter. If no authentication is present,
+ * an AccessDeniedException is thrown.
  *
- * La anotación en clase actúa como default para todos sus métodos.
- * La anotación en método tiene precedencia sobre la de clase.
+ * A class-level annotation acts as the default for all its methods.
+ * A method-level annotation takes precedence over the class-level annotation.
  */
 @Aspect
 public class McpAuthorizationAdvisor {

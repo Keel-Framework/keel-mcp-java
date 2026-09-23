@@ -20,9 +20,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 /**
- * Propiedades del pool de conexiones HTTP.
+ * HTTP connection pool properties.
  *
- * Estandar de arquitectura SCA — architecture.httpclient.*
+ * SCA architecture standard — architecture.httpclient.*
  *
  * architecture:
  *   mcp:
@@ -34,6 +34,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  *     max-connections-per-route: 20
  *     keep-alive:                10000
  */
+
 @ConfigurationProperties(prefix = "keel.adapters.rest-client.http-client")
 public record HttpClientProperties(
 

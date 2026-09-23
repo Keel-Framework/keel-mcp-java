@@ -27,7 +27,7 @@ public class JwksRemoteLoader {
     private final RestClient restClient;
 
     /**
-     * Descarga el JWKS del endpoint y lo parsea como JWKSet Nimbus.
+     * Downloads the JWKS from the endpoint and parses it as a Nimbus JWKSet.
      *
      * @param jwksUri URI del endpoint JWKS
      * @return JWKSet parseado

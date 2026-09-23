@@ -37,14 +37,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * Filtro de autenticación HTTP que:
- *  1. Extrae el Bearer token del header Authorization
- *  2. Delega la validación a KeycloakTokenValidator
- *  3. Si válido → construye KeycloakPrincipal y puebla SecurityContextHolder
- *  4. Si inválido → responde 401 Unauthorized y corta la cadena
+ * HTTP authentication filter that:
+ *  1. Extracts the Bearer token from the Authorization header
+ *  2. Delegates validation to KeycloakTokenValidator
+ *  3. If valid → builds a KeycloakPrincipal and populates the SecurityContextHolder
+ *  4. If invalid → responds with 401 Unauthorized and stops the filter chain
  *
- * Implementa OncePerRequestFilter para garantizar ejecución única por request,
- * incluyendo forwards y dispatches internos de Spring.
+ * Implements OncePerRequestFilter to guarantee a single execution per request,
+ * including forwards and internal Spring dispatches.
  */
 
 @RequiredArgsConstructor

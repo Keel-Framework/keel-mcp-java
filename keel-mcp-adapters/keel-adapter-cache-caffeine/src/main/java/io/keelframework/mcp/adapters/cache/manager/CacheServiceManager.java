@@ -29,16 +29,15 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 /*
-Ciclo de vida:
- Crear      → instanciar cache con configuración
- Leer       → get con miss/hit
- Escribir   → put
- Invalidar  → evict entrada específica
- Limpiar    → clear todas las entradas
- Expirar    → TTL automático Cafeína
- Destruir   → liberar recursos al apagar
+ * Lifecycle:
+ * Create     → instantiate cache with configuration
+ * Read       → get with miss/hit
+ * Write      → put
+ * Invalidate → evict specific entry
+ * Clear      → clear all entries
+ * Expire     → automatic Caffeine TTL expiration
+ * Destroy    → release resources on shutdown
  */
-
 public final class CacheServiceManager {
 
     private static final Logger log =
@@ -54,9 +53,8 @@ public final class CacheServiceManager {
     }
 
     // ================================================
-    // GET — lectura con hit/miss
+    // GET — read with hit/miss
     // ================================================
-
     public <T> Optional<T> get(String cacheName, Object key, Class<T> type) {
         try {
             Cache.ValueWrapper wrapper = resolveCache(cacheName).get(key);
@@ -77,7 +75,7 @@ public final class CacheServiceManager {
     }
 
     // ================================================
-    // PUT — escritura
+    // PUT — write
     // ================================================
 
     public void put(String cacheName, Object key, Object value) {
@@ -94,9 +92,8 @@ public final class CacheServiceManager {
     }
 
     // ================================================
-    // GET OR LOAD — cache
+    // GET OR LOAD — cache lookup or load
     // ================================================
-
     public <T> T getOrLoad(String cacheName,
                            Object key,
                            Class<T> type,
@@ -113,9 +110,8 @@ public final class CacheServiceManager {
     }
 
     // ================================================
-    // EVICT — invalidación entrada específica
+    // EVICT — invalidate specific entry
     // ================================================
-
     public void evict(String cacheName, Object key) {
         try {
             resolveCache(cacheName).evict(key);
@@ -130,9 +126,8 @@ public final class CacheServiceManager {
     }
 
     // ================================================
-    // CLEAR — limpieza completa
+    // CLEAR — clear all entries
     // ================================================
-
     public void clear(String cacheName) {
         try {
             resolveCache(cacheName).clear();
@@ -147,9 +142,8 @@ public final class CacheServiceManager {
     }
 
     // ================================================
-    // STATS — retorna tu modelo CacheModel
+    // STATS — returns your CacheModel
     // ================================================
-
     public CacheModel stats(String cacheName) {
         try {
             var caffeineMgr   = (CaffeineCacheManager) cacheManager;
@@ -187,9 +181,8 @@ public final class CacheServiceManager {
     }
 
     // ================================================
-    // DESTROY — liberación recursos al apagar
+    // DESTROY — release resources on shutdown
     // ================================================
-
     @PreDestroy
     public void destroy() {
         log.info("CACHE DESTROY — liberando todas las caches");
@@ -203,10 +196,6 @@ public final class CacheServiceManager {
             }
         });
     }
-
-    // ================================================
-    // PRIVADO
-    // ================================================
 
     private Cache resolveCache(String cacheName) {
         Cache cache = cacheManager.getCache(cacheName);

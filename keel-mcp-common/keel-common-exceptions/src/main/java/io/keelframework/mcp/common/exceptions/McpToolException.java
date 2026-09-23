@@ -16,15 +16,16 @@
 package io.keelframework.mcp.common.exceptions;
 
 /**
- * Excepción estándar para errores producidos dentro de una tool MCP
- * (por ejemplo, al invocar un backend externo vía adapter-rest-client).
+ * Standard exception for errors occurring within an MCP tool
+ * (for example, when invoking an external backend via the
+ * adapter-rest-client).
  *
- * Al ser un RuntimeException, Spring AI la captura automáticamente al
- * invocar el método anotado con @Tool y devuelve su mensaje al modelo
- * como resultado de error de la tool (isError=true), sin necesidad de
- * usar org.springframework.ai.tool.execution.ToolExecutionException
- * directamente (esa clase exige un ToolDefinition en el constructor y
- * está pensada para uso interno del framework, no para lanzarla a mano).
+ * As a RuntimeException, Spring AI automatically handles it when
+ * invoking a method annotated with @Tool and returns its message to
+ * the model as a tool execution error (isError=true), without the need
+ * to use org.springframework.ai.tool.execution.ToolExecutionException
+ * directly. That class requires a ToolDefinition in its constructor and
+ * is intended for internal framework use rather than being thrown manually.
  */
 public class McpToolException extends RuntimeException {
 

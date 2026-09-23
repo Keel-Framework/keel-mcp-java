@@ -22,11 +22,11 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import java.util.stream.Collectors;
 
 /**
- * Token de autenticación de Spring Security que envuelve el Jwt.
- * Se establece en el SecurityContextHolder tras una validación exitosa del JWT.
+ * Spring Security authentication token that wraps the Jwt.
+ * Set in the SecurityContextHolder after successful JWT validation.
  *
- * Siempre está autenticado (authenticated=true) porque solo se crea
- * después de que KeycloakTokenValidator confirma la validez del JWT.
+ * Always authenticated (authenticated=true) because it is only created
+ * after KeycloakTokenValidator confirms the JWT is valid.
  */
 
 public class McpAuthenticationToken extends AbstractAuthenticationToken {

@@ -75,7 +75,7 @@ public class MvnArchetype {
         } catch (IllegalArgumentException e) {
             System.out.println(" ! " + e.getMessage());
         } catch (IOException e) {
-            System.out.println("No se ha podido generar el proyecto desde el arquetipo");
+            System.out.println("Failed to generate the project from the archetype.");
         }
 
     }
@@ -106,7 +106,7 @@ public class MvnArchetype {
         try (InputStream in = MvnArchetype.class.getClassLoader().getResourceAsStream("archetype.properties")) {
 
             if (in == null) {
-                throw new IOException("No se ha encontrado archetype.properties en el classpath");
+                throw new IOException("archetype.properties not found on the classpath.");
             }
 
             properties.load(in);
@@ -115,25 +115,24 @@ public class MvnArchetype {
         String version = properties.getProperty("archetype.version");
 
         if (version == null || version.trim().isEmpty()) {
-            throw new IOException("La propiedad archetype.version no está definida en archetype.properties");
+            throw new IOException("The archetype.version property is not defined in archetype.properties.");
         }
 
         return version;
     }
 
     /**
-     * Convierte un nombre válido de proyecto (permite guiones y mayúsculas,
-     * PROJECT_REGEX) en un código válido para package Java y para las
-     * properties micro/domain del arquetipo: minúsculas, sin guiones. Si el
-     * resultado empezara por dígito, lo prefija para evitar un identificador
-     * Java inválido.
+     * Converts a valid project name (hyphens and uppercase letters allowed,
+     * PROJECT_REGEX) into a valid code for Java packages and the archetype's
+     * micro/domain properties: lowercase and without hyphens. If the result
+     * starts with a digit, it is prefixed to avoid an invalid Java identifier.
      */
     private static String sanitizeForPackage(String value) {
 
         String sanitized = value.replace("-", "").toLowerCase();
 
         if (sanitized.isEmpty()) {
-            throw new IllegalArgumentException("El valor '" + value + "' queda vacío al eliminar los guiones");
+            throw new IllegalArgumentException("The value is empty after removing hyphens.");
         }
 
         if (Character.isDigit(sanitized.charAt(0))) {

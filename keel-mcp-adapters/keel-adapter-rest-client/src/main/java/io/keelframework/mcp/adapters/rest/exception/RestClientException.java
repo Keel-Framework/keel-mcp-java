@@ -16,12 +16,12 @@
 package io.keelframework.mcp.adapters.rest.exception;
 
 /**
- * Jerarquia de excepciones del adaptador REST MCP/SCA.
+ * Exception hierarchy for the MCP/SCA REST adapter.
  *
- * sealed class con tres implementaciones:
- * - HttpError          → error HTTP (4xx, 5xx)
- * - Timeout            → timeout de conexion o lectura
- * - ServiceUnavailable → servicio no disponible
+ * Sealed class with three implementations:
+ * - HttpError          → HTTP error (4xx, 5xx)
+ * - Timeout            → connection or read timeout
+ * - ServiceUnavailable → service unavailable
  */
 public sealed class RestClientException
     extends RuntimeException
