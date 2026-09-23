@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.develop.archetype;
 
 import java.util.Arrays;
@@ -61,6 +76,7 @@ public final class Constants {
             "mvn archetype:generate"
                     + " -DarchetypeGroupId=io.keelframework.mcp"
                     + " -DarchetypeArtifactId=keel-mcp-archetype"
+                    + " -DgroupId=%s"
                     + " -DarchetypeVersion=%s"
                     + " -DmicroName=%s"
                     + " -Dmicro=%s"
@@ -91,4 +107,14 @@ public final class Constants {
 
     public static final String RESERVED_WORDS_ERROR_MESSAGE =
             "The microservice name cannot be a reserved Windows OS name.";
+
+
+    public static final String THREE_ARGUMENTS_ERROR_MESSAGE =
+            "Missing argument <groupId>. Please provide it to proceed.";
+
+    public static final String GROUP_ID_REGEX = "^[a-zA-Z][a-zA-Z0-9.]*$";
+
+    public static final String INVALID_GROUPID_MESSAGE =
+            "The groupId may only contain letters, numbers and dots, "
+                    + "and it must start with a letter (regex: " + GROUP_ID_REGEX + ")";
 }

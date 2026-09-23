@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
@@ -8,145 +23,109 @@ import org.springframework.ai.mcp.annotation.McpPrompt;
 import org.springframework.stereotype.Component;
 
 /**
- * Prompts MCP — plantillas de conversación reutilizables.
+ * MCP Prompts — reusable conversation templates.
  *
- * GUÍA PARA EL DESARROLLADOR:
+ * DEVELOPER GUIDE:
  * ─────────────────────────────────────────────────────────────────
- * Un Prompt es una plantilla que guía al LLM en flujos específicos.
- * El MCP Client lo invoca para estructurar la conversación.
+ * A Prompt is a template that guides the LLM through specific flows.
+ * The MCP Client invokes it to structure the conversation.
  *
- * CUÁNDO USAR PROMPTS:
- *  - Flujos complejos con varios pasos transacionales (alta simulacion, contratación)
- *  - Cuando necesitas que el LLM siga instrucciones exactas
- *  - Procesos que requieren validación antes de ejecutar una tool
- *  - Respuestas que deben tener un formato estructurado específico
+ * WHEN TO USE PROMPTS:
+ *  - Complex flows with multiple transactional steps (e.g. quote
+ *    simulation, contracting)
+ *  - When the LLM needs to follow exact instructions
+ *  - Processes that require validation before executing a tool
+ *  - Responses that must follow a specific structured format
  *
- * ANOTACIÓN @McpPrompt:
+ * @McpPrompt ANNOTATION:
  * ─────────────────────────────────────────────────────────────────
- *  name        → identificador único del prompt
- *                formato: "mcp-server6-rest-poc-nombre-accion"
- *  description → CRÍTICO — describe cuándo el MCP Client debe invocar
- *                este prompt. Sé específico:
- *                "Usar cuando el usuario quiera X"
+ *  name        → unique identifier for the prompt
+ *                format: "mcp-server-rest-poc-action-name"
+ *  description → CRITICAL — describes when the MCP Client should
+ *                invoke this prompt. Be specific:
+ *                "Use when the user wants to X"
  *
- * ANOTACIÓN @McpArg:
+ * @McpArg ANNOTATION:
  * ─────────────────────────────────────────────────────────────────
- *  description → explica qué dato se espera en este parámetro
- *                incluye formato y valores válidos si aplica
+ *  description → explains what data is expected for this parameter,
+ *                including format and valid values if applicable
  *
- * ESTRUCTURA DEL MENSAJE:
+ * MESSAGE STRUCTURE:
  * ─────────────────────────────────────────────────────────────────
- * Solo USER    → el LLM decide cómo responder = casos simples
- * USER+ASSISTANT → el LLM sigue el formato exacto  = respuestas estructuradas
+ * USER only        → the LLM decides how to respond = simple cases
+ * USER + ASSISTANT → the LLM follows the exact format = structured responses
  *
- * NOTA: Esta clase es OPCIONAL.
- * Elimínala si no necesitas guiar al LLM en flujos específicos.
+ * NOTE: This class is OPTIONAL.
+ * Remove it if you don't need to guide the LLM through specific flows.
  * ─────────────────────────────────────────────────────────────────
  */
-
 
 @Component
 public class Prompts {
 
     // ================================================
-    // EJEMPLOS — eliminar cuando implementes tus promtps
+    // EXAMPLES — remove when you implement your own prompts
     // ================================================
 
     /**
-     * Ejemplo 1 — Prompt de consulta con un parámetro, guía al LLM para consultar una entidad por ID.
-     * PATRÓN: consulta por identificador
-     * TOOL que invocará: busca_[entidad](id)
+     * Example — a prompt with a single parameter, guiding the LLM to
+     * look up an entity by ID.
+     * PATTERN: lookup by identifier
+     * TOOL it will invoke: find[Entity](id)
      *
      * @McpPrompt(
-     *       name = "mcp-server6-rest-poc-consulta",
-     *       description = "Plantilla para consultar una entidad por su identificador ID. " +
-     *               "Usar cuando el usuario quiera información detallada de un elemento específico."
+     *       name = "petstore-find-pet",
+     *       description = "Template for looking up a pet by its ID. " +
+     *               "Use when the user wants full details about one specific pet."
      * )
-     * public McpSchema.GetPromptResult consultaEntidad(
-     *       @McpArg(description = "Identificador numérico de la entidad. Ejemplo: 1, 2, 3")
-     *       String id) {
+     * public McpSchema.GetPromptResult findPetPrompt(
+     *       @McpArg(description = "Numeric ID of the pet. Example: 1, 2, 3")
+     *       String petId) {
      *
-     *   return McpSchema.GetPromptResult.builder()
-     *           .description("Consulta entidad por ID")
-     *           .messages(List.of(
-     *                   McpSchema.PromptMessage.builder()
-     *                           .role(McpSchema.Role.USER)
-     *                           .content(new McpSchema.TextContent(
-     *                                   "Dame información completa de la entidad con ID " + id + ".\n" +
-     *                                           "Incluye todos los detalles y datos relacionados disponibles."))
-     *                           .build()
-     *           ))
-     *           .build();
-     * }*/
+     *   return new McpSchema.GetPromptResult(
+     *           "Look up a pet by ID",
+     *           List.of(
+     *                   new McpSchema.PromptMessage(
+     *                           McpSchema.Role.USER,
+     *                           new McpSchema.TextContent(
+     *                                   "Give me the full details of the pet with ID " + petId + ".\n" +
+     *                                           "Include its name, category and current status."))
+     *           ));
+     * }
+     */
 
     /**
-     * Ejemplo 2 — Prompt de registro con múltiples parámetros.
-     * Guía al LLM para registrar una nueva entidad validando los datos.
-     *
-     * PATRÓN: creación con validación previa
-     * TOOL que invocará: registra_[entidad](params)
-     *
-     * @McpPrompt(
-     *       name = "mcp-server6-rest-poc-registrar",
-     *       description = "Plantilla para registrar una nueva entidad en el sistema. " +
-     *               "Usar cuando el usuario quiera crear o añadir un nuevo elemento. " +
-     *               "Valida los datos antes de invocar la tool de registro."
-     * )
-     * public McpSchema.GetPromptResult registrarEntidad(
-     *       @McpArg(description = "Nombre de la entidad a registrar. Debe ser único en el sistema.")
-     *       String nombre,
-     *       @McpArg(description = "Descripción detallada de la entidad. Mínimo 10 caracteres.")
-     *       String descripcion) {
-     *
-     *   return McpSchema.GetPromptResult.builder()
-     *           .description("Registro de nueva entidad")
-     *           .messages(List.of(
-     *                   McpSchema.PromptMessage.builder()
-     *                           .role(McpSchema.Role.USER)
-     *                           .content(new McpSchema.TextContent(
-     *                                   "Quiero registrar una nueva entidad con los siguientes datos:\n" +
-     *                                           "- Nombre:      " + nombre + "\n" +
-     *                                           "- Descripción: " + descripcion + "\n\n" +
-     *                                           "Antes de registrar:\n" +
-     *                                           "1. Verifica que no existe una entidad con el mismo nombre\n" +
-     *                                           "2. Valida que la descripción tiene mínimo 10 caracteres\n" +
-     *                                           "3. Si todo es correcto, procede con el registro\n" +
-     *                                           "4. Confirma al usuario el ID asignado"))
-     *                           .build()
-     *           ))
-     *           .build();
-     * }*/
-
-    /**
-     * Ejemplo 3 —  Define también la respuesta esperada del LLM - Prompt con mensaje ASSISTANT (comentado).
-     * OPCIONAL — usar cuando necesites controlar el formato de respuesta.
+     * Example — a multi-step prompt (USER + ASSISTANT) that guides the
+     * LLM to collect all required fields before invoking a creation
+     * tool, instead of calling it with missing data.
+     * PATTERN: guided data collection before a write operation
+     * TOOL it will invoke: register[Entity](field1, field2, field3)
      *
      * @McpPrompt(
-     *         name = "mcp-server6-rest-poc-consulta-estructurada",
-     *         description = "Consulta con respuesta en formato estructurado. " +
-     *                 "Usar cuando necesites una respuesta con formato específico."
+     *       name = "petstore-register-pet",
+     *       description = "Template for registering a new pet, guiding the model to " +
+     *               "collect name, category and status before calling the registerPet tool. " +
+     *               "Use when the user wants to add a pet but hasn't given all the required fields yet."
      * )
-     * public McpSchema.GetPromptResult consultaEstructurada(
-     *         @McpArg(description = "ID de la entidad") String id) {
+     * public McpSchema.GetPromptResult registerPetPrompt() {
      *
-     *     return McpSchema.GetPromptResult.builder()
-     *             .description("Consulta con respuesta estructurada")
-     *             .messages(List.of(
-     *                     McpSchema.PromptMessage.builder()
-     *                             .role(McpSchema.Role.USER)
-     *                             .content(new McpSchema.TextContent(
-     *                                     "Dame información de la entidad con ID " + id))
-     *                             .build(),
-     *                     McpSchema.PromptMessage.builder()
-     *                             .role(McpSchema.Role.ASSISTANT)
-     *                             .content(new McpSchema.TextContent(
-     *                                     "Aquí están los datos de la entidad:\n" +
-     *                                     "- ID: ...\n" +
-     *                                     "- Nombre: ...\n" +
-     *                                     "- Descripción: ..."))
-     *                             .build()
-     *             ))
-     *             .build();
+     *   return new McpSchema.GetPromptResult(
+     *           "Register a new pet, step by step",
+     *           List.of(
+     *                   new McpSchema.PromptMessage(
+     *                           McpSchema.Role.USER,
+     *                           new McpSchema.TextContent(
+     *                                   "I want to register a new pet.")),
+     *                   new McpSchema.PromptMessage(
+     *                           McpSchema.Role.ASSISTANT,
+     *                           new McpSchema.TextContent(
+     *                                   "Sure! I need three things before I can register the pet:\n" +
+     *                                           "1. Name\n" +
+     *                                           "2. Category (e.g. Dog, Cat, Bird)\n" +
+     *                                           "3. Status (available, pending, or sold)\n\n" +
+     *                                           "Please provide all three, and I'll confirm the details " +
+     *                                           "back to you before registering."))
+     *           ));
      * }
      */
 

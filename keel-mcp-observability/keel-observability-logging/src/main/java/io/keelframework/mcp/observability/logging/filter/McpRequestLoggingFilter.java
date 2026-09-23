@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.observability.logging.filter;
 
 import io.keelframework.mcp.observability.logging.config.LogProperties;
@@ -17,19 +32,26 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * Filtro de trazas TECHNICAL — cada request HTTP entrante.
+ * TECHNICAL tracing filter for each incoming HTTP request.
  *
- * Responsabilidades:
- *  1. Puebla McpMdcPopulator (traceId, spanId, requestId, sessionId)
- *  2. Puebla McpLogContext (remoteAddr, userAgent, method, uri) — UNA VEZ
- *     para que todos los componentes del thread los lean automáticamente
- *  3. Emite traza TECHNICAL via handler.technical() al final del request
- *  4. Limpia MDC y McpLogContext en el finally
+ * <p>Responsibilities:</p>
+ * <ol>
+ *     <li>Populates {@code McpMdcPopulator} with trace, span, request,
+ *         and session identifiers.</li>
+ *     <li>Populates {@code McpLogContext} with HTTP request data
+ *         (remote address, user agent, method, and URI) once, making it
+ *         automatically available to all components running in the current thread.</li>
+ *     <li>Emits a TECHNICAL trace through {@code handler.technical()}
+ *         when the request completes.</li>
+ *     <li>Clears the MDC and {@code McpLogContext} in the {@code finally} block.</li>
+ * </ol>
  *
- * El traceId/spanId raíz se capturan en variables locales antes de
- * chain.doFilter() porque el MDC será mutado por los componentes hijos
- * (auth, session, tools) vía newChildSpan() — no se puede leer del
- * MDC en el finally ya que pertenecería al último span hijo.
+ * <p>The root trace and span identifiers are captured in local variables
+ * before {@code chain.doFilter()} is invoked. The MDC may be modified by
+ * child components such as authentication, session handling, and tools
+ * through {@code newChildSpan()}. Therefore, reading the identifiers from
+ * the MDC in the {@code finally} block would return the identifiers of the
+ * last child span rather than those of the root request.</p>
  */
 
 @Order(Ordered.HIGHEST_PRECEDENCE + 10)
@@ -53,18 +75,26 @@ public class McpRequestLoggingFilter extends OncePerRequestFilter {
         String requestId = McpMdcPopulator.generateRequestId();
         McpMdcPopulator.putRequestId(requestId);
 
-        // ── Propagación de trazas distribuidas ────────────────────────────
-        // Captura traceId/spanId/traceOrigin RAÍZ en variables locales —
-        // son el spanId de ESTE filtro, no se deben leer del MDC al final
-        // porque para entonces ya fueron mutados por los componentes hijos.
+        /**
+         * Distributed trace propagation.
+         *
+         * <p>Captures the root {@code traceId}, {@code spanId}, and {@code traceOrigin}
+         * in local variables. These identifiers belong to this filter's span and must
+         * not be read from the MDC at the end of the request, as they may have been
+         * modified by child components in the meantime.</p>
+         */
         McpLogContext.get()
                 .remoteAddr(request.getRemoteAddr())
                 .userAgent(request.getHeader("User-Agent"))
                 .method(request.getMethod())
                 .uri(request.getRequestURI());
 
-        // ── traceId/spanId raíz capturados en variables LOCALES ──────────────
-        // el MDC será mutado por los hijos vía newChildSpan()
+        /**
+         * Root trace and span IDs captured in LOCAL variables.
+         *
+         * <p>The MDC will be mutated by child components through
+         * {@code newChildSpan()}.</p>
+         */
         String rootTraceId    = resolveTraceId(request);
         TraceOrigin rootOrigin = resolveTraceOrigin(request);
         String rootSpanId     = resolveSpanId(request);
@@ -84,10 +114,10 @@ public class McpRequestLoggingFilter extends OncePerRequestFilter {
             long durationMs =
                     (System.nanoTime() - startNs) / 1_000_000;
             try {
-                // ── Emite traza TECHNICAL — isActive() verificado en emit() ──
+                /**
+                 * Emits the TECHNICAL trace — {@code isActive()} is checked in {@code emit()}.
+                 */
                 handler.technical(McpLogEntry.builder()
-                        // sobreescribe los campos MDC con los valores RAÍZ locales
-                        // porque emit() leerá el MDC ya mutado por los hijos
                         .traceId(rootTraceId)
                         .traceOrigin(rootOrigin)
                         .spanId(rootSpanId)

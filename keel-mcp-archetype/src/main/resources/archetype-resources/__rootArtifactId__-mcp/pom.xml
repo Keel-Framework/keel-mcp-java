@@ -61,7 +61,7 @@
         <!-- REST Client — usado por los tools para invocar servicios externos -->
         <!-- ================================================ -->
         <dependency>
-            <groupId>io.keelframework.mcp..adapters</groupId>
+            <groupId>io.keelframework.mcp.adapters</groupId>
             <artifactId>keel-adapter-rest-client</artifactId>
         </dependency>
 

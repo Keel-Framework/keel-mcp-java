@@ -1,42 +1,63 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.observability.logging.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import io.keelframework.mcp.observability.logging.model.McpLogType;
 /**
- * Propiedades de observabilidad MCP.
+ * Configuration properties for MCP observability.
  *
- * Configuración externa via application.yml o variables de entorno:
+ * <p>External configuration can be provided through {@code application.yml}
+ * or environment variables.</p>
  *
- * sca:
+ * <p>Example:</p>
+ * <pre>
+ * keel:
  *   mcp:
  *     observability:
- *       enabled:           ${MCP_OBSERVABILITY_ENABLED:true}
- *       technical:         ${MCP_OBSERVABILITY_TECHNICAL:true}
- *       functional:        ${MCP_OBSERVABILITY_FUNCTIONAL:true}
- *       security:          ${MCP_OBSERVABILITY_SECURITY:true}
+ *       enabled: ${MCP_OBSERVABILITY_ENABLED:true}
+ *       technical: ${MCP_OBSERVABILITY_TECHNICAL:true}
+ *       functional: ${MCP_OBSERVABILITY_FUNCTIONAL:true}
+ *       security: ${MCP_OBSERVABILITY_SECURITY:true}
+ * </pre>
+ *
+ * <p>All observability features are enabled by default.</p>
  */
-@ConfigurationProperties(prefix = "sca.mcp.observability")
+@ConfigurationProperties(prefix = "keel.mcp.observability")
 public record LogProperties(
 
-        /** Activa/desactiva todas las trazas. Default: true */
+        /** Enables/disables all traces. Default: true */
         @DefaultValue("true")
         boolean enabled,
 
-        /** Activa trazas TECHNICAL. Default: true */
+        /** Enables TECHNICAL traces. Default: true */
         @DefaultValue("true")
         boolean technical,
 
-        /** Activa trazas FUNCTIONAL. Default: true */
+        /** Enables FUNCTIONAL traces. Default: true */
         @DefaultValue("true")
         boolean functional,
 
-        /** Activa trazas SECURITY. Default: true */
+        /** Enables SECURITY traces. Default: true */
         @DefaultValue("true")
         boolean security
 ) {
     /**
-     * Verifica si un tipo de traza está activo.
+     * Checks whether a trace type is enabled.
      */
     public boolean isActive(McpLogType type) {
         if (!enabled) return false;

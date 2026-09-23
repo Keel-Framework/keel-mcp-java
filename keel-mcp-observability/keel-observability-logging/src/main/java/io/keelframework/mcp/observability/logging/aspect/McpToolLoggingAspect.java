@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.observability.logging.aspect;
 
 import io.keelframework.mcp.observability.logging.config.McpLogSerializer;
@@ -12,15 +27,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Aspecto de trazas FUNCTIONAL — cada tool call MCP.
+ * FUNCTIONAL tracing aspect for each MCP tool call.
  *
- * Usa McpAuthLoggingHandler.functional() para centralizar la lógica
- * de contexto (traceId, spanId, parentSpanId, remoteAddr, etc.) —
- * solo pasa los campos específicos de la tool call.
+ * <p>Uses {@code McpAuthLoggingHandler.functional()} to centralize
+ * trace context handling, including {@code traceId}, {@code spanId},
+ * {@code parentSpanId}, remote address, and other common fields.
+ * Only tool call-specific fields are provided by the aspect.</p>
  *
- * Activación: sca.mcp.observability.functional=true
+ * <p>Activation: {@code keel.mcp.observability.functional=true}</p>
  */
-
 @Aspect
 public class McpToolLoggingAspect {
 

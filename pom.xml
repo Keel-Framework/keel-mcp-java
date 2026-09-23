@@ -11,6 +11,34 @@
   <groupId>io.keelframework.mcp</groupId>
   <artifactId>keel-mcp-java</artifactId>
   <description>Keel MCP Java architecture framework and component aggregator.</description>
+
+  <name>Keel MCP Java</name>
+  <url>https://github.com/Keel-Framework/keel-mcp-java</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Keel Framework</name>
+      <email>contact@keelframework.io</email>
+      <organization>Keel Framework</organization>
+      <organizationUrl>https://keelframework.io</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/Keel-Framework/keel-mcp-java.git</connection>
+    <developerConnection>scm:git:git@github.com:Keel-Framework/keel-mcp-java.git</developerConnection>
+    <url>https://github.com/Keel-Framework/keel-mcp-java</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <packaging>pom</packaging>
   <version>${revision}</version>
 
@@ -48,7 +76,6 @@
     <spring-security.version>6.5.0</spring-security.version>
     <!-- Adapters -->
     <httpclient5.version>5.3.1</httpclient5.version>
-    <postgresql.version>42.7.1</postgresql.version>
 
     <!-- Aspectj AOP -->
     <aspectjweaver.version>1.9.22</aspectjweaver.version>
@@ -75,10 +102,6 @@
     <module>keel-mcp-archetype-installer</module>
   </modules>
 
-  <!-- ============================================ -->
-  <!-- SIN <dependencies> en el BOM raíz           -->
-  <!-- Solo <dependencyManagement>                  -->
-  <!-- ============================================ -->
   <dependencyManagement>
     <dependencies>
       <!-- Spring Cloud BOM -->
@@ -123,15 +146,6 @@
           </exclusion>
         </exclusions>
       </dependency>
-
-
-      <!-- Starters que los módulos hijos usan sin versión -->
-      <!-- AOP
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-aop</artifactId>
-        <version>${spring-boot.version}</version>
-      </dependency>-->
 
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -196,9 +210,8 @@
       </dependency>
 
       <!-- ====================================== -->
-      <!-- MÓDULOS INTERNOS                       -->
+      <!-- KEEL INTERNAL MODULES                  -->
       <!-- ====================================== -->
-      <!--  Módulos JAR que otros proyectos sí pueden usar como dependencia -->
       <dependency>
         <groupId>io.keelframework.mcp.adapters</groupId>
         <artifactId>keel-adapter-auth-idp</artifactId>
@@ -276,14 +289,6 @@
         <version>${httpclient5.version}</version>
       </dependency>
       <!-- ====================================== -->
-      <!-- ADAPTERS JDBC                          -->
-      <!-- ====================================== -->
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>${postgresql.version}</version>
-      </dependency>
-      <!-- ====================================== -->
       <!-- OBSERVABILITY                          -->
       <!-- ====================================== -->
       <dependency>
@@ -292,19 +297,8 @@
         <version>${keel-observability-logging.version}</version>
       </dependency>
 
-      <!-- ================================================ -->
-      <!-- OAUTH2 RESOURCE SERVER — Spring Boot 4.0         -->
-      <!-- Nuevo nombre en Boot 4.x                         -->
-      <!--
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-      </dependency>
-      -->
-      <!-- ================================================ -->
-
       <!-- ====================================== -->
-      <!-- UTILIDADES                             -->
+      <!-- COMMONS                               -->
       <!-- ====================================== -->
       <dependency>
         <groupId>org.projectlombok</groupId>
@@ -331,6 +325,7 @@
 
   <build>
     <plugins>
+      <!-- Flatten File -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
@@ -356,13 +351,74 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- Sources jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Javadoc jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.11.2</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <doclint>none</doclint>
+          <failOnError>false</failOnError>
+          <source>25</source>
+        </configuration>
+      </plugin>
     </plugins>
 
     <pluginManagement>
       <plugins>
-        <!-- ================================== -->
-        <!-- Versión  compatible       -->
-        <!-- ================================== -->
+        <!-- License headers -->
+        <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>4.6</version>
+          <configuration>
+            <licenseSets>
+              <licenseSet>
+                <header>${maven.multiModuleProjectDirectory}/license-header.txt</header>
+                <includes>
+                  <include>**/*.java</include>
+                </includes>
+                <excludes>
+                  <exclude>**/target/**</exclude>
+                  <exclude>**/archetype-resources/**</exclude>
+                </excludes>
+              </licenseSet>
+            </licenseSets>
+            <properties>
+              <owner>Keel Framework</owner>
+              <year>2026</year>
+            </properties>
+            <mapping>
+              <java>SLASHSTAR_STYLE</java>
+            </mapping>
+            <strictCheck>true</strictCheck>
+          </configuration>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
@@ -391,5 +447,36 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.2.7</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <keyname>2D19AAA4D957E116</keyname>
+              <gpgArguments>
+                <arg>--pinentry-mode</arg>
+                <arg>loopback</arg>
+              </gpgArguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.observability.logging.mdc;
 
 import org.slf4j.MDC;
@@ -7,19 +22,27 @@ import java.util.HexFormat;
 import java.util.UUID;
 
 /**
- * Gestiona el MDC para trazas MCP.
+ * Manages the MDC for MCP tracing.
  *
- * Modelo de tracing:
- *  - traceId       → ÚNICO por toda la transacción, no cambia entre componentes
- *  - traceOrigin   → INTERNAL si el MCP Server generó el traceId (origen de
- *                     la transacción), PROPAGATED si vino de fuera
- *  - spanId        → propio de CADA componente/operación dentro de la transacción
- *  - parentSpanId  → el spanId del componente que precedió a este, permite
- *                     reconstruir el árbol jerárquico completo en Kibana
+ * <p>Tracing model:</p>
+ * <ul>
+ *     <li>{@code traceId} — unique across the entire transaction and remains
+ *         unchanged between components.</li>
+ *     <li>{@code traceOrigin} — {@code INTERNAL} if the MCP Server generated
+ *         the trace ID (transaction origin), or {@code PROPAGATED} if it was
+ *         received from an external source.</li>
+ *     <li>{@code spanId} — unique to each component or operation within
+ *         the transaction.</li>
+ *     <li>{@code parentSpanId} — the span ID of the component that preceded
+ *         the current one, allowing the complete hierarchical tree to be
+ *         reconstructed in Kibana.</li>
+ * </ul>
  *
- *  Formato de IDs — W3C Trace Context (sin dependencia de OpenTelemetry):
- *  *  - traceId → 32 caracteres hex (128 bits)
- *  *  - spanId  → 16 caracteres hex (64 bits)
+ * <p>ID format — W3C Trace Context, without an OpenTelemetry dependency:</p>
+ * <ul>
+ *     <li>{@code traceId} — 32 hexadecimal characters (128 bits).</li>
+ *     <li>{@code spanId} — 16 hexadecimal characters (64 bits).</li>
+ * </ul>
  */
 public class McpMdcPopulator {
 
@@ -85,16 +108,17 @@ public class McpMdcPopulator {
     public static String getClientId()      { return MDC.get(CLIENT_ID); }
 
     /**
-     * Abre un nuevo span hijo: el spanId actual (si existe) pasa a ser
-     * parentSpanId, y se genera un spanId nuevo (formato W3C) que queda
-     * activo en el MDC.
+     * Opens a new child span: the current span ID, if present, becomes the
+     * {@code parentSpanId}, and a new W3C-compliant span ID is generated and
+     * stored as the active span in the MDC.
      *
-     * Cada componente (auth, session, tool call, llamada a backend) debe
-     * llamar a este método al iniciar su trabajo, y usar el valor devuelto
-     * como spanId de su propio McpLogEntry, junto con
-     * McpMdcPopulator.getParentSpanId() para el campo parentSpanId.
+     * <p>Each component (authentication, session, tool call, backend request)
+     * should call this method when starting its work and use the returned value
+     * as the span ID of its own {@code McpLogEntry}, together with
+     * {@code McpMdcPopulator.getParentSpanId()} for the {@code parentSpanId}
+     * field.</p>
      *
-     * @return el nuevo spanId generado, ya activo en el MDC
+     * @return the newly generated span ID, now active in the MDC
      */
     public static String newChildSpan() {
         String currentSpanId = getSpanId();

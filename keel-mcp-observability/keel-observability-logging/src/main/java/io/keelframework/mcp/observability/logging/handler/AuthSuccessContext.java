@@ -1,29 +1,47 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.observability.logging.handler;
 
 import java.time.Instant;
 import java.util.List;
 
 /**
- * Contexto de datos para una autenticación JWT exitosa — agrupa los campos
- * de auditoría en un solo objeto para evitar firmas de método con muchos
- * parámetros
+ * Data context for a successful JWT authentication.
  *
- * Uso desde McpAuthenticationFilter:
+ * <p>Groups authentication and audit fields into a single object,
+ * avoiding method signatures with a large number of parameters.</p>
  *
- *   AuthSuccessContext ctx = AuthSuccessContext.builder()
- *           .subject(token.subject())
- *           .issuer(token.issuer())
- *           .audience(token.audience())
- *           .expiresAt(token.expiresAt())
- *           .sessionId(request.getHeader("Mcp-Session-Id"))
- *           .clientId(clientId)
- *           .uri(request.getRequestURI())
- *           .method(request.getMethod())
- *           .remoteAddr(request.getRemoteAddr())
- *           .userAgent(request.getHeader("User-Agent"))
- *           .build();
+ * <p>Usage from {@code McpAuthenticationFilter}:</p>
  *
- *   authLoggingHandler.logAuthSuccess(ctx);
+ * <pre>
+ * AuthSuccessContext ctx = AuthSuccessContext.builder()
+ *         .subject(token.subject())
+ *         .issuer(token.issuer())
+ *         .audience(token.audience())
+ *         .expiresAt(token.expiresAt())
+ *         .sessionId(request.getHeader("Mcp-Session-Id"))
+ *         .clientId(clientId)
+ *         .uri(request.getRequestURI())
+ *         .method(request.getMethod())
+ *         .remoteAddr(request.getRemoteAddr())
+ *         .userAgent(request.getHeader("User-Agent"))
+ *         .build();
+ *
+ * authLoggingHandler.logAuthSuccess(ctx);
+ * </pre>
  */
 public record AuthSuccessContext(
         String subject,

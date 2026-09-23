@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
@@ -7,52 +23,52 @@ import org.springframework.ai.mcp.annotation.McpResource;
 import org.springframework.stereotype.Component;
 
 /**
- * Resources MCP — contexto y datos expuestos al LLM.
+ * MCP Resources — context and data exposed to the LLM.
  *
- * GUÍA PARA EL DESARROLLADOR:
+ * DEVELOPER GUIDE:
  * ─────────────────────────────────────────────────────────────────
- * Un Resource es información que el LLM puede consultar
- * sin ejecutar acciones contra el backend.
+ * A Resource is information the LLM can query without executing
+ * actions against the backend.
  *
- * CUÁNDO USAR RESOURCES:
- *  - Catálogos de datos que cambian poco (ramos, tipos, estados)
- *  - Reglas de negocio que el LLM debe respetar
- *  - Guías de uso de las tools disponibles
- *  - Contexto del dominio que el LLM no conoce
+ * WHEN TO USE RESOURCES:
+ *  - Data catalogs that rarely change (product lines, types, statuses)
+ *  - Business rules the LLM must respect
+ *  - Usage guides for the available tools
+ *  - Domain context the LLM doesn't already know
  *
- * TIPOS DE RESOURCE:
+ * RESOURCE TYPES:
  *
- *  1. ESTÁTICO — contenido hardcoded, no cambia
- *     public String miResource() {
- *         return "contenido fijo";
+ *  1. STATIC — hardcoded content, never changes
+ *     public String myResource() {
+ *         return "fixed content";
  *     }
  *
- *  2. DINÁMICO — contenido del backend en tiempo real
- *     public String miResource() {
- *         McpRestClient client = restClientFactory.getClient("servicio");
- *         return client.get("/catalogo/", String.class).body();
+ *  2. DYNAMIC — real-time content from the backend
+ *     public String myResource() {
+ *         McpRestClient client = restClientFactory.getClient("service");
+ *         return client.get("/catalog/", String.class).body();
  *     }
  *
  *
- * ANOTACIÓN @McpResource (Estandar de Spring AI):
+ * @McpResource ANNOTATION (Spring AI standard):
  * ─────────────────────────────────────────────────────────────────
- *  uri         → identificador único del resource
- *                formato: "${artifactId}://nombre-descriptivo"
- *  name        → nombre legible para el LLM
- *  description → CRÍTICO — el LLM decide si consultar este resource
- *                basándose en esta description. Sé específico:
- *                "Consultar cuando el usuario pregunte sobre X"
- *  mimeType    → "text/plain" o "application/json"
+ *  uri         → unique identifier for the resource
+ *                format: "${artifactId}://descriptive-name"
+ *  name        → human-readable name for the LLM
+ *  description → CRITICAL — the LLM decides whether to query this
+ *                resource based on this description. Be specific:
+ *                "Query when the user asks about X"
+ *  mimeType    → "text/plain" or "application/json"
  *
- * NOTA: Esta clase es OPCIONAL.
- * Elimínala si no necesitas exponer contexto al LLM.
+ * NOTE: This class is OPTIONAL.
+ * Remove it if you don't need to expose context to the LLM.
  * ─────────────────────────────────────────────────────────────────
  */
 @Component
 public class Resources {
 
     // ================================================
-    // EJEMPLOS — eliminar cuando implementes tus resources
+    // EXAMPLES — remove when you implement your own prompts
     // ================================================
 
     /**

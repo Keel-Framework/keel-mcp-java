@@ -64,26 +64,25 @@
         </dependency>
 
         <!-- ============================================ -->
-        <!-- FRAMEWORK — Transport Streamable MVC    -->
-        <!-- Incluye transitivamente:                    -->
-        <!--   transport-auth-service  → JWT + Security  -->
-        <!--   transport-session-service → sesión        -->
-        <!--   adapter-auth-idp → validación JWT         -->
-        <!--   adapter-cache-caffeine → caché            -->
+        <!-- FRAMEWORK — Transport Streamable MVC         -->
+        <!-- Includes transitively:                      -->
+        <!--   transport-auth-service  → JWT + Security   -->
+        <!--   transport-session-service → session        -->
+        <!--   adapter-auth-idp → JWT validation          -->
+        <!--   adapter-cache-caffeine → caching           -->
         <!-- ============================================ -->
         <dependency>
             <groupId>io.keelframework.mcp.transport</groupId>
             <artifactId>keel-transport-streamable-mvc</artifactId>
         </dependency>
 
-        <!-- CORS es opcional — el proyecto lo añade solo si expone /mcp a un navegador -->
-        <dependency>
+        <!-- CORS is optional — the project only adds it if /mcp is exposed to a browser -->        <dependency>
             <groupId>io.keelframework.mcp.transport</groupId>
-            <artifactId>keel-transport-cors-service</artifactId>
+            <artifactId>keel-transport-cors</artifactId>
         </dependency>
 
         <!-- ============================================ -->
-        <!-- Observabilidad — Logging Auth                -->
+        <!-- Observability — Authentication Logging      -->
         <!-- ============================================ -->
         <dependency>
             <groupId>io.keelframework.mcp.observability</groupId>

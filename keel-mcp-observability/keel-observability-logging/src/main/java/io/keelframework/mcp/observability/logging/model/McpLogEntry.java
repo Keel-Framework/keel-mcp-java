@@ -1,22 +1,34 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.observability.logging.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
-import io.keelframework.mcp.observability.logging.model.McpLogType;
-import io.keelframework.mcp.observability.logging.model.TraceOrigin;
-
 import java.time.Instant;
 
 /**
- * Modelo de traza estándar MCP.
+ * Standard MCP trace model.
  *
- * Serializado en JSON para ELK
- * Los campos nulos se excluyen del JSON.
+ * <p>Serialized as JSON for ELK.
+ * Null fields are excluded from the serialized JSON.</p>
  */
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record McpLogEntry(
-        // ── Identificación ─
+        // ── Identification ───────────────────────────────
         String traceId,
         TraceOrigin traceOrigin,
         String spanId,
@@ -26,30 +38,30 @@ public record McpLogEntry(
         String sessionId,
         String clientId,
 
-        // ── Temporal ─
+        // ── Temporal fields ───────────────────────────────
         Instant timestamp,
         Long durationMs,
 
-        // ── Clasificación ─
+        // ── Classification ───────────────────────────────
         McpLogType eventType,
         String level,
         String component,
 
-        // ── HTTP ─
+        // ── HTTP Method ───────────────────────────────
         String method,
         String uri,
         Integer httpStatus,
         String remoteAddr,
         String userAgent,
 
-        // ── MCP ─
+        // ── MCP ───────────────────────────────
         String mcpOperation,
         String toolName,
         JsonNode toolParams,
         JsonNode toolResult,
         Boolean toolSuccess,
 
-        // ── Seguridad ─
+        // ── Security ───────────────────────────────
         String authJwtSubject,
         String authJwtIssuer,
         String authJwtAudience,
@@ -57,12 +69,12 @@ public record McpLogEntry(
         String authResult,
         String authFailReason,
 
-        // ── Error ────────────────────────────────────────────────────────────
+        // ── Errores ───────────────────────────────
         String errorCode,
         String errorType,
         String errorMessage,
 
-        // ── Backend ──────────────────────────────────────────────────────────
+        // ── Backend ───────────────────────────────
         String serviceName,
         String serviceUrl,
         Integer serviceStatus,

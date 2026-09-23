@@ -6,12 +6,15 @@ package ${package}.model.entity;
 import java.io.Serializable;
 
 /**
- * Entity de ejemplo "Hello World" — modelo interno, sin persistencia JPA
- * (este arquetipo MCP no incluye adaptador JDBC/JPA). Si en el futuro
- * añades persistencia real con Hibernate, esta clase deberá pasar a ser
- * una @Entity mutable con constructor vacío, ya que Hibernate no soporta
- * records de forma estándar.
+ * record HelloWorldItemEntity
+ *
+ * "Hello World" sample entity — internal model, without JPA persistence
+ * (this MCP archetype does not include a JDBC/JPA adapter). If you add
+ * real persistence with Hibernate in the future, this class will need
+ * to become a mutable @Entity with a no-args constructor, since
+ * Hibernate does not support records out of the box.
  */
+
 public record HelloWorldItemEntity(
         Long id,
         String message

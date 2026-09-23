@@ -1,149 +1,224 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 package ${package}.mcp.tools;
 
-import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.ai.tool.annotation.ToolParam;
 import io.keelframework.mcp.adapters.rest.client.McpRestClient;
 import io.keelframework.mcp.adapters.rest.client.McpRestClientFactory;
-import org.springframework.stereotype.Component;
-import java.util.Map;
-import java.util.HashMap;
-import java.time.LocalDateTime;
-import io.keelframework.mcp.observability.logging.handler.McpAuthLoggingHandler;
+import io.keelframework.mcp.adapters.rest.exception.RestClientException;
+import io.keelframework.mcp.adapters.rest.model.RestResponse;
 import io.keelframework.mcp.common.exceptions.McpToolException;
+import jakarta.annotation.PostConstruct;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.stereotype.Component;
+import io.keelframework.mcp.observability.logging.handler.McpAuthLoggingHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.Map;
 /**
- * Tools MCP — acciones que el LLM puede ejecutar contra el backend.
+ * MCP Tools — actions the LLM can execute against the backend.
  *
- * GUÍA PARA EL DESARROLLADOR:
+ * DEVELOPER GUIDE:
  * ─────────────────────────────────────────────────────────────────
- * 1. Añade un método por cada acción de negocio
- * 2. Anota cada método con @Tool y una description clara:
+ * 1. Add one method per business action
+ * 2. Annotate each method with @Tool and a clear description:
  *
  *    @Tool(description = """
- *        [QUÉ HACE]    — acción concreta en una línea.
- *        [CUÁNDO USAR] — situaciones donde el LLM debe invocarla.
- *        [QUÉ DEVUELVE]— formato y contenido de la respuesta.
+ *        [WHAT IT DOES]  — the concrete action, in one line.
+ *        [WHEN TO USE]   — situations where the LLM should call it.
+ *        [WHAT IT RETURNS] — format and content of the response.
  *        """)
  *
- * 3. Anota cada parámetro con @ToolParam:
+ * 3. Annotate each parameter with @ToolParam:
  *
- *    @ToolParam(description = "Tipo + valores válidos + ejemplo")
+ *    @ToolParam(description = "Type + valid values + example")
  *
- * 4. Usa McpRestClientFactory para llamar al backend:
+ * 4. Use McpRestClientFactory to call the backend:
  *
- *    McpRestClient client = restClientFactory.getClient("nombre-servicio");
- *    RestResponse<MiResponse> response = client.get("/ruta/{id}", MiResponse.class, id);
+ *    McpRestClient client = restClientFactory.getClient("service-name");
+ *    RestResponse<MyResponse> response = client.get("/path/{id}", MyResponse.class, id);
  *
- * EJEMPLOS:
+ * EXAMPLES:
  * ─────────────────────────────────────────────────────────────────
- * Ver métodos comentados abajo como referencia.
- * Elimina los ejemplos cuando implementes tus tools reales.
+ * See the commented-out methods below for reference.
+ * Remove the examples once you implement your actual tools.
  */
 @Component
 public class Tools {
+    private static final Logger log = LoggerFactory.getLogger(Tools.class);
 
-    // ── Inyecta el factory para comunicación HTTP-REST / Logging con el backend ────────
+    private static final String SERVICE_NAME = "SERVICE_NAME";
+
+    private McpRestClient name_service;
     private final McpRestClientFactory restClientFactory;
-    private final McpAuthLoggingHandler mcplog; // Dev posibilidad generar trazas custom en la tools
+    private final McpAuthLoggingHandler mcplog;
+
 
     public Tools(McpRestClientFactory restClientFactory, McpAuthLoggingHandler mcplog) {
         this.restClientFactory = restClientFactory;
         this.mcplog = mcplog;
     }
 
-    @Tool(description = "Suma dos números enteros y retorna el resultado")
-    public Map<String, Object> suma(
-            @ToolParam(description = "Primer número") int a,
-            @ToolParam(description = "Segundo número") int b) {
-        long durationMs = (System.nanoTime() - System.nanoTime()) / 1_000_000;
-        long sumaResultado = (long) a + b;
+    @PostConstruct
+    void init(){
 
-        if (sumaResultado > Integer.MAX_VALUE || sumaResultado < Integer.MIN_VALUE) {
-            throw new McpToolException(
-                    "suma-tool",
-                    "suma(" + a + "," + b + ")",
-                    400,
-                    "El resultado de la suma excede el rango soportado"
-            );
-        }
+        //this.name_service = restClientFactory.getClient(SERVICE_NAME);
 
-        Map<String, Object> resultado = new HashMap<>();
-        resultado.put("operacion", a + " + " + b);
-        resultado.put("resultado", sumaResultado);
-        resultado.put("timestamp", LocalDateTime.now().toString());
-        mcplog.logTool(
-                "suma-services",
-                "/suma/a/b",
-                200,
-                durationMs
-        );
-        return resultado;
+    }
+
+    @Tool(description = "Returns a simple greeting. Use this to verify the MCP server is reachable and tools are working.")
+    public String ping() {
+        return "ping";
     }
 
 
-
+    // ================================================
+    // EXAMPLES TOOLS — remove when you implement your own prompts
+    // ================================================
     /**
-    * Ejemplo 1 — Tool para sumar dos numeros INT.
-    *
-    * @Tool(description = "Suma dos números enteros y retorna el resultado")
-    * public Map<String, Object> suma(
-    *        @ToolParam(description = "Primer número") int a,
-    *        @ToolParam(description = "Segundo número") int b) {
-    *    Map<String, Object> resultado = new HashMap<>();
-    *    resultado.put("operacion",  a + " + " + b);
-    *    resultado.put("resultado",  a + b);
-    *    resultado.put("timestamp",  LocalDateTime.now().toString());
-    *    return resultado;
-    }
-     */
-    /**
-    * Ejemplo 2 — Tool Busca una entidad por ID en el backend REST.
-    *
-    * @Tool(description = """
-    *         Busca una entidad por su identificador ID.
-    *         Usar cuando el usuario pregunte por una entidad específica
-    *         o mencione un ID concreto.
-    *         Devuelve los datos completos de la entidad.
-    *         """)
-    * public MiResponse busca_entidad(
-    *         @ToolParam(description = "Identificador numérico de la entidad. Ejemplo: 1, 2, 3")
-    *         int id) {
-    *
-    *     McpRestClient client = restClientFactory.getClient("nombre-servicio");
-    *
-    *     long start = System.nanoTime();
-     *    MiResponse<> response = client.get("/product/{id}", PolicyMockFactory.ProductResponse.class, productId);
-     *    mcplog.mcplog(
-     *                 "scaapa-service",
-     *                 "/product/" + productId,
-     *                 response.httpStatus(),
-     *                 durationMs);
-    *     return response.body();;
-    * }
-    */
-
-    /**
-     * Ejemplo 3 — Tool Crea una nueva entidad en el backend REST.
+     * Example — look up a single entity by its identifier.
+     * PATTERN: single-parameter lookup, typed DTO return, path variable
      *
      * @Tool(description = """
-     *         Registra una nueva entidad en el sistema.
-     *         Usar cuando el usuario quiera crear o añadir una nueva entidad.
-     *         Requiere nombre y descripción — solicitar al usuario si faltan.
-     *         Devuelve confirmación con el ID asignado.
-     *         """)
-     * public MiResponse registra_entidad(
-     *         @ToolParam(description = "Nombre de la entidad. Debe ser único.")
-     *         String nombre,
-     *         @ToolParam(description = "Descripción detallada. Mínimo 10 caracteres.")
-     *         String descripcion) {
+     *       Find a pet by its identifier.
+     *       Use when the user asks about a specific pet or mentions an ID.
+     *       Returns the pet's name, category and status.
+     *       """)
+     * public PetstoreDTO.PetResponse findPet(
+     *       @ToolParam(description = "Numeric ID of the pet. Example: 1, 2, 3")
+     *       long petId) {
      *
-     *     McpRestClient client = restClientFactory.getClient("nombre-servicio");
-     *     MiRequest request = new MiRequest(nombre, descripcion);
-     *     return client.post("/entidad/", request, MiResponse.class).body();
+     *   long start = System.nanoTime();
+     *   String path = "/pet/" + petId;
+     *   try {
+     *       RestResponse<PetstoreDTO.PetResponse> response = petClient.get(
+     *               "/pet/{petId}", PetstoreDTO.PetResponse.class, petId);
+     *
+     *       long durationMs = (System.nanoTime() - start) / 1_000_000;
+     *       mcplog.logTool(SERVICE_NAME, path, response.httpStatus(), durationMs);
+     *       return response.body();
+     *   }
+     *   catch (RestClientException e) {
+     *       long durationMs = (System.nanoTime() - start) / 1_000_000;
+     *       mcplog.logTool(SERVICE_NAME, path, 500, durationMs);
+     *       log.warn(PetstoreErrorsMsg.PET_NOT_FOUND_MSG, petId, path, e.getMessage());
+     *       throw new McpToolException(SERVICE_NAME, path, 500,
+     *               "Could not retrieve pet " + petId, e);
+     *   }
      * }
      */
+
+    /**
+     * Example — list entities filtered by a query parameter, with
+     * input validation before calling the backend.
+     * PATTERN: GET with safe query params, upfront validation,
+     * collection wrapped in a dedicated response record
+     *
+     * @Tool(description = """
+     *       List pets filtered by status.
+     *       Use when the user wants to see available, pending or sold pets.
+     *       Returns the list with name, category, status and the total number of results.
+     *       """)
+     * public PetstoreDTO.PetListResponse listPets(
+     *       @ToolParam(description = "Status to filter by. Valid values: available, pending, sold.")
+     *       String status) {
+     *
+     *   if (!VALID_STATUSES.contains(status)) {
+     *       log.warn(PetstoreErrorsMsg.PET_INVALID_STATUS_MSG, status);
+     *       throw new McpToolException(SERVICE_NAME, "/pet/findByStatus", 400,
+     *               "Invalid status '" + status + "'. Valid values: available, pending, sold.");
+     *   }
+     *
+     *   long start = System.nanoTime();
+     *   String path = "/pet/findByStatus";
+     *   try {
+     *       RestResponse<PetstoreDTO.PetResponse[]> response = petClient.getListWithQueryParams(
+     *               path, Map.of("status", status), PetstoreDTO.PetResponse[].class);
+     *
+     *       long durationMs = (System.nanoTime() - start) / 1_000_000;
+     *       mcplog.logTool(SERVICE_NAME, path, response.httpStatus(), durationMs);
+     *
+     *       List<PetstoreDTO.PetResponse> pets = response.body();
+     *       return new PetstoreDTO.PetListResponse(pets, pets.size());
+     *   }
+     *   catch (RestClientException e) {
+     *       long durationMs = (System.nanoTime() - start) / 1_000_000;
+     *       mcplog.logTool(SERVICE_NAME, path, 500, durationMs);
+     *       log.warn(PetstoreErrorsMsg.PET_LIST_FAILED_MSG, status, path, e.getMessage());
+     *       throw new McpToolException(SERVICE_NAME, path, 500,
+     *               "Could not retrieve the pet list for status '" + status + "'", e);
+     *   }
+     * }
+     */
+
+    /**
+     * Example — create a new entity from several required parameters.
+     * PATTERN: POST with a request DTO, upfront validation, returns
+     * the created entity with its assigned ID
+     *
+     * @Tool(description = """
+     *       Register a new pet in the system.
+     *       Use when the user wants to add a new pet.
+     *       Requires name, category and status — ask the user if any are missing.
+     *       Returns the registered pet with its assigned ID.
+     *       """)
+     * public PetstoreDTO.PetResponse registerPet(
+     *       @ToolParam(description = "Pet's name. Required.")
+     *       String name,
+     *       @ToolParam(description = "Pet's category. Example: Dog, Cat, Bird.")
+     *       String category,
+     *       @ToolParam(description = "Pet's status. Valid values: available, pending, sold.")
+     *       String status) {
+     *
+     *   if (!VALID_STATUSES.contains(status)) {
+     *       log.warn(PetstoreErrorsMsg.PET_INVALID_STATUS_MSG, status);
+     *       throw new McpToolException(SERVICE_NAME, "/pet", 400,
+     *               "Invalid status '" + status + "'. Valid values: available, pending, sold.");
+     *   }
+     *
+     *   long start = System.nanoTime();
+     *   String path = "/pet";
+     *   PetstoreDTO.PetRequest request = new PetstoreDTO.PetRequest(
+     *           name, new PetstoreDTO.Category(null, category), status);
+     *
+     *   try {
+     *       RestResponse<PetstoreDTO.PetResponse> response =
+     *               petClient.post(path, request, PetstoreDTO.PetResponse.class);
+     *
+     *       long durationMs = (System.nanoTime() - start) / 1_000_000;
+     *       mcplog.logTool(SERVICE_NAME, path, response.httpStatus(), durationMs);
+     *       return response.body();
+     *   }
+     *   catch (RestClientException e) {
+     *       long durationMs = (System.nanoTime() - start) / 1_000_000;
+     *       mcplog.logTool(SERVICE_NAME, path, 500, durationMs);
+     *       log.warn(PetstoreErrorsMsg.PET_CREATION_FAILED_MSG, name, path, e.getMessage(), e.getMessage());
+     *       throw new McpToolException(SERVICE_NAME, path, 500,
+     *               "Could not register pet '" + name + "'", e);
+     *   }
+     * }
+     */
+
+
+
+
 
 
 }

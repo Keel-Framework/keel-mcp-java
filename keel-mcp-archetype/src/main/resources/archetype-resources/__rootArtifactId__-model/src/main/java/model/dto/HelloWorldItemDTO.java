@@ -6,10 +6,13 @@ package ${package}.model.dto;
 import java.io.Serializable;
 
 /**
- * DTO de ejemplo "Hello World" — demuestra el mapeo Entity ↔ DTO vía
- * MapStruct (ver HelloWorldItemMapper). Sustitúyelo por tus propios DTOs
- * de negocio, o bórralo si no lo necesitas.
+ * record HelloWorldItemDTO
+ *
+ * "Hello World" sample DTO — demonstrates Entity ↔ DTO mapping via
+ * MapStruct (see HelloWorldItemMapper). Replace it with your own
+ * business DTOs, or delete it if you don't need it.
  */
+
 public record HelloWorldItemDTO(
         Long id,
         String message

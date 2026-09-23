@@ -12,13 +12,24 @@
   <artifactId>keel-mcp-java</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
+  <name>Keel MCP Java</name>
   <description>Keel MCP Java architecture framework and component aggregator.</description>
+  <url>https://github.com/Keel-Framework/keel-mcp-java</url>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
-      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
     </license>
   </licenses>
+  <developers>
+    <developer>
+      <name>Keel Framework</name>
+      <email>contact@keelframework.io</email>
+      <organization>Keel Framework</organization>
+      <organizationUrl>https://keelframework.io</organizationUrl>
+    </developer>
+  </developers>
   <modules>
     <module>keel-mcp-common</module>
     <module>keel-mcp-adapters</module>
@@ -27,6 +38,11 @@
     <module>keel-mcp-observability</module>
     <module>keel-mcp-archetype-installer</module>
   </modules>
+  <scm>
+    <connection>scm:git:https://github.com/Keel-Framework/keel-mcp-java.git</connection>
+    <developerConnection>scm:git:git@github.com:Keel-Framework/keel-mcp-java.git</developerConnection>
+    <url>https://github.com/Keel-Framework/keel-mcp-java</url>
+  </scm>
   <properties>
     <wiremock.version>3.3.1</wiremock.version>
     <keel-mcp-archetype.version>1.0.0</keel-mcp-archetype.version>
@@ -54,7 +70,6 @@
     <maven.compiler.target>25</maven.compiler.target>
     <keel-transport-auth.version>1.0.0</keel-transport-auth.version>
     <testcontainers.version>1.19.3</testcontainers.version>
-    <postgresql.version>42.7.1</postgresql.version>
     <keel-adapter-rest-client.version>1.0.0</keel-adapter-rest-client.version>
     <keel-mcp-archetype-installer.version>1.0.0</keel-mcp-archetype-installer.version>
     <keel-adapter-cache-caffeine.version>1.0.0</keel-adapter-cache-caffeine.version>
@@ -212,11 +227,6 @@
         <version>${httpclient5.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>${postgresql.version}</version>
-      </dependency>
-      <dependency>
         <groupId>io.keelframework.mcp.observability</groupId>
         <artifactId>keel-observability-logging</artifactId>
         <version>${keel-observability-logging.version}</version>
@@ -242,6 +252,33 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>4.6</version>
+          <configuration>
+            <licenseSets>
+              <licenseSet>
+                <header>${maven.multiModuleProjectDirectory}/license-header.txt</header>
+                <includes>
+                  <include>**/*.java</include>
+                </includes>
+                <excludes>
+                  <exclude>**/target/**</exclude>
+                  <exclude>**/archetype-resources/**</exclude>
+                </excludes>
+              </licenseSet>
+            </licenseSets>
+            <properties>
+              <owner>Keel Framework</owner>
+              <year>2026</year>
+            </properties>
+            <mapping>
+              <java>SLASHSTAR_STYLE</java>
+            </mapping>
+            <strictCheck>true</strictCheck>
+          </configuration>
+        </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven-compiler-plugin.version}</version>
@@ -294,6 +331,64 @@
           <flattenMode>resolveCiFriendliesOnly</flattenMode>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.11.2</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <doclint>none</doclint>
+          <failOnError>false</failOnError>
+          <source>25</source>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.2.7</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <keyname>2D19AAA4D957E116</keyname>
+              <gpgArguments>
+                <arg>--pinentry-mode</arg>
+                <arg>loopback</arg>
+              </gpgArguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

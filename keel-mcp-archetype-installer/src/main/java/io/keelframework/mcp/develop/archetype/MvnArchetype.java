@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.develop.archetype;
 
 import java.io.File;
@@ -13,6 +28,8 @@ public class MvnArchetype {
     private static final int ARG_MICRO_NAME = 0;
     private static final int ARG_VERSION = 1;
     private static final int ARG_DOMAIN_NAME = 2;
+    private static final int ARG_GROUP_ID = 3;
+
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
@@ -27,26 +44,24 @@ public class MvnArchetype {
             String microName = args[ARG_MICRO_NAME];
             String version = args[ARG_VERSION];
             String domainName = args[ARG_DOMAIN_NAME];
+            String groupId = args[ARG_GROUP_ID];
             String archetypeVersion = readArchetypeVersion();
 
 
             String micro = sanitizeForPackage(microName);
             String domain = sanitizeForPackage(domainName);
 
-            String groupId =
-                    "io.keelframework.mcp." + domain + "." + micro;
-
             String command = String.format(
                     Constants.UNFORMATTED_MVN_COMMAND,
+                    groupId,
                     archetypeVersion,
                     microName,
                     micro,
                     domainName,
                     domain,
-                    groupId,
                     version
             );
-
+            System.out.println("DEBUG: " + command);
             int exitCode = runCommand(
                     sistemaOperativo,
                     command,
@@ -141,6 +156,9 @@ public class MvnArchetype {
         if (args.length == 2 || args[ARG_DOMAIN_NAME] == null || args[ARG_DOMAIN_NAME].trim().isEmpty()) {
             throw new IllegalArgumentException(Constants.TWO_ARGUMENTS_ERROR_MESSAGE);
         }
+        if (args.length == 3 || args[ARG_GROUP_ID] == null || args[ARG_GROUP_ID].trim().isEmpty()) {
+            throw new IllegalArgumentException(Constants.THREE_ARGUMENTS_ERROR_MESSAGE);
+        }
         validateFormatArguments(args);
 
     }
@@ -149,6 +167,9 @@ public class MvnArchetype {
 
         if (!args[ARG_MICRO_NAME].matches(Constants.PROJECT_REGEX)) {
             throw new IllegalArgumentException(Constants.INVALID_MICRONAME_MESSAGE);
+        }
+        if (!args[ARG_GROUP_ID].matches(Constants.GROUP_ID_REGEX)) {
+            throw new IllegalArgumentException(Constants.INVALID_GROUPID_MESSAGE);
         }
 
         if (WINDOWS_RESERVED_WORDS_LIST.contains(args[ARG_MICRO_NAME].toUpperCase())) {

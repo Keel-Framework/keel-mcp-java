@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.observability.logging.config;
 
 import io.keelframework.mcp.observability.logging.aspect.McpToolLoggingAspect;
@@ -12,23 +27,29 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 
 /**
- * Autoconfiguración de observabilidad MCP.
+ * Auto-configuration for MCP observability.
  *
- * Registra automáticamente:
- *  - McpRequestLoggingFilter → trazas TECHNICAL
- *  - McpToolLoggingAspect    → trazas FUNCTIONAL
- *  - McpAuthLoggingHandler   → trazas SECURITY
+ * <p>Automatically configures and registers the following observability components:</p>
+ * <ul>
+ *     <li>{@code McpRequestLoggingFilter} for TECHNICAL traces</li>
+ *     <li>{@code McpToolLoggingAspect} for FUNCTIONAL traces</li>
+ *     <li>{@code McpAuthLoggingHandler} for SECURITY traces</li>
+ * </ul>
  *
- * Activación global:
- *  sca.mcp.observability.enabled=true (default)
+ * <p>Observability is enabled by default and can be globally controlled through:</p>
+ * <pre>
+ * keel.mcp.observability.enabled=true
+ * </pre>
  *
- * Variables de entorno:
- *  MCP_OBSERVABILITY_ENABLED    → true/false
- *  MCP_OBSERVABILITY_TECHNICAL  → true/false
- *  MCP_OBSERVABILITY_FUNCTIONAL → true/false
- *  MCP_OBSERVABILITY_SECURITY   → true/false
+ * <p>The following environment variables can be used to configure individual
+ * observability categories:</p>
+ * <ul>
+ *     <li>{@code MCP_OBSERVABILITY_ENABLED} — true/false</li>
+ *     <li>{@code MCP_OBSERVABILITY_TECHNICAL} — true/false</li>
+ *     <li>{@code MCP_OBSERVABILITY_FUNCTIONAL} — true/false</li>
+ *     <li>{@code MCP_OBSERVABILITY_SECURITY} — true/false</li>
+ * </ul>
  */
-
 @AutoConfiguration
 @EnableAspectJAutoProxy
 @EnableConfigurationProperties(LogProperties.class)
@@ -39,7 +60,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
         matchIfMissing = true)
 public class McpLoggingAutoConfig {
 
-    // ── 1. Handler primero — filtro y aspecto dependen de él ─────────────────
+    /**
+     * 1. Handler first — the filter and aspect depend on it.
+     */
     @Bean
     @ConditionalOnMissingBean
     public McpAuthLoggingHandler mcpAuthLoggingHandler(
@@ -47,7 +70,9 @@ public class McpLoggingAutoConfig {
         return new McpAuthLoggingHandler(logProperties);
     }
 
-    // ── 2. Filtro — recibe handler ───────────────────────────────────────────
+    /**
+     * 2. Filter — receives the handler.
+     */
     @Bean
     @ConditionalOnMissingBean
     public McpRequestLoggingFilter mcpRequestLoggingFilter(
@@ -56,8 +81,9 @@ public class McpLoggingAutoConfig {
         return new McpRequestLoggingFilter(logProperties, handler);
     }
 
-    // ── 3. Aspecto — recibe handler ──────────────────────────────────────────
-    @Bean
+    /**
+     * 3. Aspect — receives the handler.
+     */    @Bean
     @ConditionalOnMissingBean
     public McpToolLoggingAspect mcpToolLoggingAspect(
             LogProperties logProperties,

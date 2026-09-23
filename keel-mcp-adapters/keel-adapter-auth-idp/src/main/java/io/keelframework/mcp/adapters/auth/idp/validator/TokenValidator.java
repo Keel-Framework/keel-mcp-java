@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.adapters.auth.idp.validator;
 
 import com.nimbusds.jose.JWSVerifier;
@@ -10,7 +25,7 @@ import io.keelframework.mcp.common.jwt.provider.JwtClaims;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.util.stream.Collectors;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.List;
@@ -99,8 +114,10 @@ public class TokenValidator {
                     .toList();
         }
 
-        // scope → List<String>
-        String scopes = (String) claims.getClaim("scope");
+        // scope → some IdPs return a single space-separated String
+        // (e.g. "api read write"), others return a JSON array
+        // (e.g. ["api", "read"]). Handle both.
+        String scopes = extractScope(claims.getClaim("scope"));
 
         Date iat = claims.getIssueTime();
         Date exp = claims.getExpirationTime();
@@ -113,12 +130,33 @@ public class TokenValidator {
                 claims.getJWTID(),
                 claims.getAudience(),
                 realmRoles,
-                scopes,          // List<String>
+                scopes,          // String, space-separated
                 iat != null ? iat.toInstant() : null,
                 exp != null ? exp.toInstant() : null,
                 claims.toJSONObject()
         );
     }
 
-
+    /**
+     * Normalizes the "scope" claim regardless of how the IdP represents
+     * it: as a single space-separated String (most common, per RFC
+     * 6749/8693 convention), or as a JSON array of individual scope
+     * strings (used by some providers, e.g. Duende IdentityServer).
+     */
+    private String extractScope(Object rawScope) {
+        if (rawScope == null) {
+            return null;
+        }
+        if (rawScope instanceof String s) {
+            return s;
+        }
+        if (rawScope instanceof List<?> list) {
+            return list.stream()
+                    .filter(item -> item instanceof String)
+                    .map(item -> (String) item)
+                    .collect(Collectors.joining(" "));
+        }
+        log.warn("Unexpected type for 'scope' claim: {}", rawScope.getClass());
+        return null;
+    }
 }

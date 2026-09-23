@@ -9,11 +9,14 @@ import ${package}.model.dto.HelloWorldItemDTO;
 import ${package}.model.entity.HelloWorldItemEntity;
 
 /**
- * Mapper de ejemplo "Hello World" — demuestra el mapeo Entity ↔ DTO vía
- * MapStruct. Como HelloWorldItemDTO y HelloWorldItemEntity son records con
- * los mismos nombres de componente (id, message), MapStruct los mapea
- * automáticamente sin necesidad de @Mapping explícito.
- * Sustitúyelo por tus propios mappers de negocio, o bórralo si no lo necesitas.
+ * HelloWorldItemMapper
+ *
+ * "Hello World" sample mapper — demonstrates Entity ↔ DTO mapping via
+ * MapStruct. Since HelloWorldItemDTO and HelloWorldItemEntity are records
+ * with matching component names (id, message), MapStruct maps them
+ * automatically with no need for an explicit @Mapping.
+ * Replace it with your own business mappers, or delete it if you don't
+ * need it.
  */
 @Mapper
 public interface HelloWorldItemMapper {

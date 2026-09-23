@@ -1,19 +1,37 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.observability.logging.context;
 
-
 /**
- * Contexto del request HTTP disponible durante todo el ciclo de vida
- * del thread — se puebla una vez en McpRequestLoggingFilter y se lee
- * automáticamente en McpAuthLoggingHandler.emit() sin necesidad de
- * pasarlo explícitamente en cada traza.
+ * Holds HTTP request context data throughout the lifecycle of the current thread.
  *
- * Mismo patrón que MDC pero para campos del request HTTP (remoteAddr,
- * userAgent, method, uri) que no son String simples o no encajan en MDC.
+ * <p>The context is populated once by {@code McpRequestLoggingFilter} and can
+ * then be accessed automatically by {@code McpAuthLoggingHandler.emit()}
+ * without explicitly passing request information to each log entry.</p>
  *
- * Ciclo de vida:
- *   1. McpRequestLoggingFilter.doFilterInternal() → McpLogContext.get().populate(request)
- *   2. Cualquier componente del thread → McpLogContext.get().remoteAddr() etc.
- *   3. McpRequestLoggingFilter.finally → McpLogContext.clear()
+ * <p>This follows a similar pattern to MDC, but is intended for HTTP request
+ * fields such as the remote address, user agent, HTTP method, and URI that
+ * represent request context rather than simple log correlation values.</p>
+ *
+ * <p>Lifecycle:</p>
+ * <ol>
+ *     <li>{@code McpRequestLoggingFilter.doFilterInternal()} populates the context.</li>
+ *     <li>Any component in the current thread can access the request context.</li>
+ *     <li>{@code McpRequestLoggingFilter.finally} clears the context.</li>
+ * </ol>
  */
 public class McpLogContext {
 

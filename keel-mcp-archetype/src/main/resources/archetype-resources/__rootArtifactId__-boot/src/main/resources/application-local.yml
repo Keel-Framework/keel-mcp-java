@@ -1,44 +1,37 @@
-# ==========================================
-# Adaptador REST — servicios backend
-# Añade aqui los backend que invocan
-# las tools MCP de este servidor.
-#
-# Ejemplo:
-# services:
-#   nombre-servicio:
-#     base-url:     https://api.ejemplo.sca.es
-#     log-requests: true
-# ==========================================
-
+# application-local.yml
 server:
   ssl:
     enabled: false
 
-sca:
-  mcp:
-    adapters:
-      rest:
-        ssl:
-          enabled: true
-          trust-store: classpath:user-truststore.jks
-          trust-store-password: 12345678
-          trust-store-type: JKS
-        # Añade aquí los backends que invocan las tools MCP de este servidor
-        # Ejemplo:
-        # services:
-        #   nombre-servicio:
+keel:
+  adapters:
+    rest-client:
+      ssl:
+        enabled: false
+        trust-store: ${TRUSTSTORE_LOCAL}
+        trust-store-password: ${TRUSTSTORE_PASSWORD}
+        trust-store-type: ${TRUSTSTORE_TYPE}
+      services: {}
+        #   name-service:
         #     base-url:     https://api.ejemplo.sca.es
         #     log-requests: true
-        services: { }
+
+  mcp:
     transport:
-      cors:
-        enabled: true
-        allowed-origins: [ "*" ]
-        allow-credentials: false
+      session:
+        max-sessions: 500
+        timeout: 30m
+        log-events: false
       auth:
+        enabled: false
         jwt:
-          issuer: https://login.int.sca.corp/auth/realms/ssointadeslas
-          jwks-uri: https://login.int.sca.corp/auth/realms/ssointadeslas/protocol/openid-connect/certs
+          issuer: ${JWT_ISSUER}
+          jwks-uri: ${JWKS_URI}
+          audience: ${JWT_AUDIENCE}
+          jwks-ttl: 1h
+      cors:
+        enabled: false
+        allowed-origins: [ ]
 
 management:
   endpoint:

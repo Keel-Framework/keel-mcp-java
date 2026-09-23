@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.transport.auth.filter;
 
 import io.keelframework.mcp.common.jwt.model.Jwt;
@@ -21,15 +36,22 @@ public class ClientIdExtractor {
 
     private static final String ANONYMOUS = "anonymous";
 
-
     public ClientIdExtractor() {
     }
 
     /**
-     * Extrae el subject del JWT como clientId.
+     * Extracts the client identifier from the JWT.
      *
-     * @param authentication Authentication del SecurityContextHolder
-     * @return subject del JWT, o "anonymous" si no hay autenticación válida
+     * Prefers the "sub" (subject) claim, which is populated for
+     * user-based grants (authorization_code, password). Falls back to
+     * the "client_id" claim for machine-to-machine tokens issued via
+     * the client_credentials grant, where "sub" is typically absent
+     * (there's no end user, only the calling client itself) — this is
+     * the case for the public Duende IdentityServer demo used by the
+     * Petstore sample, and for many OAuth2/OIDC providers in general.
+     *
+     * @param authentication Authentication from the SecurityContextHolder
+     * @return the client identifier, or "anonymous" if none could be resolved
      */
     public static String extract(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -39,7 +61,17 @@ public class ClientIdExtractor {
 
         if (authentication instanceof McpAuthenticationToken mcpToken) {
             Jwt jwt = mcpToken.getPrincipal();
-            String clientId = jwt.subject();
+
+            // "sub" for user-based grants; fall back to "client_id"
+            // for machine-to-machine tokens (client_credentials),
+            // which typically have no "sub" claim at all.
+            String clientId = jwt.subject() != null ? jwt.subject() : jwt.clientId();
+
+            if (clientId == null || clientId.isBlank()) {
+                log.warn("Neither 'sub' nor 'client_id' claim present in JWT — returning anonymous");
+                return ANONYMOUS;
+            }
+
             log.debug("Extracted clientId: {}", clientId);
             return clientId;
         }
@@ -62,6 +94,5 @@ public class ClientIdExtractor {
         }
         return null;
     }
-
 
 }

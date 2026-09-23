@@ -1,3 +1,18 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.keelframework.mcp.observability.logging.handler;
 
 import io.keelframework.mcp.observability.logging.config.McpLogSerializer;
@@ -14,34 +29,39 @@ import java.util.Locale;
 import java.util.Optional;
 
 /**
- * Handler central de trazas MCP — 3 métodos genéricos reutilizables.
+ * Central MCP tracing handler providing three reusable generic methods.
  *
- * Los campos comunes (traceId, spanId, parentSpanId, requestId, sessionId,
- * clientId, remoteAddr, userAgent, method, uri) se obtienen automáticamente
- * desde McpMdcPopulator y McpLogContext — no hay que pasarlos en cada llamada.
+ * <p>Common fields such as {@code traceId}, {@code spanId},
+ * {@code parentSpanId}, {@code requestId}, {@code sessionId},
+ * {@code clientId}, {@code remoteAddr}, {@code userAgent},
+ * {@code method}, and {@code uri} are automatically obtained from
+ * {@code McpMdcPopulator} and {@code McpLogContext}. They do not need
+ * to be passed explicitly with each call.</p>
  *
- * Solo se pasan los campos ESPECÍFICOS de cada evento:
+ * <p>Only event-specific fields need to be provided:</p>
  *
- *   // Auth SUCCESS
- *   handler.security(McpLogEntry.builder()
- *           .level("INFO")
- *           .component(COMPONENT_AUTH_FILTER)
- *           .authJwtSubject(ctx.subject())
- *           .authResult("SUCCESS"));
+ * <pre>
+ * // Auth SUCCESS
+ * handler.security(McpLogEntry.builder()
+ *         .level("INFO")
+ *         .component(COMPONENT_AUTH_FILTER)
+ *         .authJwtSubject(ctx.subject())
+ *         .authResult("SUCCESS"));
  *
- *   // Tool call
- *   handler.functional(McpLogEntry.builder()
- *           .level("INFO")
- *           .component(COMPONENT_AOP_TOOLS)
- *           .toolName(toolName)
- *           .toolSuccess(true)
- *           .durationMs(durationMs));
+ * // Tool call
+ * handler.functional(McpLogEntry.builder()
+ *         .level("INFO")
+ *         .component(COMPONENT_AOP_TOOLS)
+ *         .toolName(toolName)
+ *         .toolSuccess(true)
+ *         .durationMs(durationMs));
  *
- *   // Session registered
- *   handler.technical(McpLogEntry.builder()
- *           .level("INFO")
- *           .component(COMPONENT_SESSION)
- *           .mcpOperation("session/registered"));
+ * // Session registered
+ * handler.technical(McpLogEntry.builder()
+ *         .level("INFO")
+ *         .component(COMPONENT_SESSION)
+ *         .mcpOperation("session/registered"));
+ * </pre>
  */
 
 public class McpAuthLoggingHandler {
