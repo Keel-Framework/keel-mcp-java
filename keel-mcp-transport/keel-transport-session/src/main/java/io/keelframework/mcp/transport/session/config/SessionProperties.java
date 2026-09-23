@@ -1,0 +1,65 @@
+/*
+ * Copyright 2026 Keel Framework
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.keelframework.mcp.transport.session.config;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import java.time.Duration;
+
+
+/**
+ * Propiedades configurables del servicio de sesión de transporte MCP.
+ *
+ * Ejemplo de configuración en el proyecto MCP Server:
+ *
+ * keel:
+ *   transport:
+ *     session:
+ *       max-sessions: 500
+ *       log-events:   false
+ */
+
+@ConfigurationProperties(prefix = "keel.mcp.transport.session")
+public record SessionProperties(
+
+    /**
+     * Máximo de sesiones simultáneas permitidas.
+     * Protege contra sobrecarga del servidor MCP.
+     * Default: 500
+     */
+    int maxSessions,
+
+    /**
+     * Session inactivity timeout.
+     * Default: 30 minutes.
+     */
+    Duration timeout,
+
+    /**
+     * Activa logging detallado de eventos de sesión.
+     * Solo para desarrollo — desactivar en producción.
+     * Default: false
+     */
+    boolean logEvents
+){
+    public SessionProperties {
+        if (maxSessions == 0){
+            maxSessions = 500;
+        }
+        if (timeout == null) {
+            timeout = Duration.ofMinutes(30);
+        }
+    }
+}

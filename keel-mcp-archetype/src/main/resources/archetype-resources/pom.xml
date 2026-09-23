@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+#set( $symbol_dollar = '$' )
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.keelframework.mcp</groupId>
+        <artifactId>keel-mcp-java</artifactId>
+        <version>${architectureVersion}</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${version}</version>
+    <packaging>pom</packaging>
+
+    <name>${artifactId}</name>
+    <description>MCP Server — ${artifactId}</description>
+
+    <modules>
+        <module>${rootArtifactId}-boot</module>
+        <module>${rootArtifactId}-mcp</module>
+        <module>${rootArtifactId}-model</module>
+    </modules>
+
+    <properties>
+        <java.version>25</java.version>
+        <maven.compiler.source>${symbol_dollar}{java.version}</maven.compiler.source>
+        <maven.compiler.target>${symbol_dollar}{java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>

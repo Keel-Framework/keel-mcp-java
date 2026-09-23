@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Appenders>
+
+        <!-- ── Console — trazas JSON de observability-logging ────────────────── -->
+        <!-- El JSON ya viene formado desde McpLogSerializer.toJson(entry),       -->
+        <!-- por eso el PatternLayout es solo "%msg%n" — sin envolver ni añadir   -->
+        <Console name="ObservabilityConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%msg%n"/>
+        </Console>
+
+        <!-- ── Console legible — resto de logs de la aplicación (no JSON) ────── -->
+        <Console name="AppConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+
+        <!-- ── Loggers que emiten las trazas JSON de observability-logging ───── -->
+        <Logger name="io.keelframework.mcp.observability.logging.filter.McpRequestLoggingFilter"
+                level="INFO" additivity="false">
+            <AppenderRef ref="ObservabilityConsole"/>
+        </Logger>
+
+        <Logger name="io.keelframework.mcp.observability.logging.aspect.McpToolLoggingAspect"
+                level="INFO" additivity="false">
+            <AppenderRef ref="ObservabilityConsole"/>
+        </Logger>
+
+        <Logger name="io.keelframework.mcp.observability.logging.handler.McpAuthLoggingHandler"
+                level="INFO" additivity="false">
+            <AppenderRef ref="ObservabilityConsole"/>
+        </Logger>
+
+        <!-- ── Root — resto de logs de la aplicación con formato legible ─────── -->
+        <Root level="INFO">
+            <AppenderRef ref="AppConsole"/>
+        </Root>
+
+    </Loggers>
+</Configuration>

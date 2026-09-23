@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.keelframework.mcp.transport</groupId>
+        <artifactId>keel-mcp-transport</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>keel-transport-streamable-mvc</artifactId>
+    <version>${keel-transport-streamable-mvc.version}</version>
+    <packaging>jar</packaging>
+    <name>Transport Streamable MVC</name>
+    <description>
+        Streamable transport library for MCP servers.
+        Manages the session lifecycle and the Streamable HTTP protocol. 
+        Authentication-agnostic — delegates authentication to the transport-auth-service via SecurityContextHolder.
+    </description>
+
+    <dependencies>
+
+        <!-- ================================================ -->
+        <!-- SESSION SERVICE — gestión ciclo de vida sesión   -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>io.keelframework.mcp.transport</groupId>
+            <artifactId>keel-transport-session</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- SPRING WEB — MVC + SSE + SseEmitter             -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- AUTH SERVICE — ClientIdExtractor, McpAuthToken   -->
+        <!-- Trae transitivamente: adapter-auth-idp,          -->
+        <!-- spring-security-core, model.io.keelframework.mcp.common.jwt.Jwt model                  -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>io.keelframework.mcp.transport</groupId>
+            <artifactId>keel-transport-auth</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- Observabilidad — Logging Auth                    -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>io.keelframework.mcp.observability</groupId>
+            <artifactId>keel-observability-logging</artifactId>
+        </dependency>
+
+
+        <!-- ================================================ -->
+        <!-- ACTUATOR — métricas conexiones SSE               -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- AUTOCONFIGURATION                                -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- LOMBOK                                           -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- ================================================ -->
+        <!-- TEST                                             -->
+        <!-- ================================================ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- ====================================== -->
+        <!-- Commons                              -->
+        <!-- ====================================== -->
+
+        <dependency>
+            <groupId>io.keelframework.mcp.common</groupId>
+            <artifactId>keel-common-jwt</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>
