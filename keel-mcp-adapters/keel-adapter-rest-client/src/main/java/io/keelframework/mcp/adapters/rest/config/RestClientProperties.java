@@ -20,13 +20,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.Map;
 
 /**
- * Propiedades de servicios backend para tools MCP.
+ * Backend service properties for MCP tools.
  *
- * El desarrollador solo configura las URLs de sus servicios.
- * Los headers de propagacion son internos del ecosistema SCA.
+ * The developer only configures the URLs of their services.
+ * Propagation headers are managed internally by the SCA ecosystem.
  *
  * keel:
- *   mcp:
  *     adapters:
  *     rest-client:
  *       services:
@@ -39,10 +38,11 @@ import java.util.Map;
 
 @ConfigurationProperties(prefix = "keel.adapters.rest-client")
 public record RestClientProperties(
+
     /*
-     * Mapa de servicios backend Microservice.
-     * Clave = nombre del servicio usado en McpRestClientFactory.getClient()
-     */
+    * Map of backend microservices.
+    * Key = service name used in McpRestClientFactory.getClient()
+    */
     Map<String, ServiceConfig> services
 ){
     public RestClientProperties{

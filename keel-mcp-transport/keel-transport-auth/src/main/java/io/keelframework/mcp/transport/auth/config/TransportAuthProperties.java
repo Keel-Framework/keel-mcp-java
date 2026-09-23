@@ -21,23 +21,23 @@ import java.time.Duration;
 import java.util.List;
 
 /**
- * Propiedades de configuración del módulo transport-auth-service.
+ * Configuration properties for the transport-auth-service module.
  *
- * Ejemplo application.yml:
+ * Example application.yml:
  *
- * sca:
+ * keel:
  *   mcp:
- *    transport:
- *     auth:
- *       enabled: true
- *       jwt:
- *         issuer:   https://login.int.sca.corp/auth/realms/ssointadeslas
- *         audience: mi-client-id      # opcional
- *         jwks-ttl: 1h
- *         jwks-uri: https://login.int.sca.corp/auth/realms/ssointadeslas/protocol/openid-connect/certs
- *       excluded-paths:
- *         - /actuator/health
- *         - /actuator/info
+ *     transport:
+ *       auth:
+ *         enabled: true
+ *         jwt:
+ *           issuer:
+ *           audience:       # optional
+ *           jwks-ttl: 1h
+ *           jwks-uri:
+ *         excluded-paths:
+ *           - /actuator/health
+ *           - /actuator/info
  */
 @Data
 @ConfigurationProperties(prefix = "keel.mcp.transport.auth")
@@ -52,26 +52,26 @@ public class TransportAuthProperties {
     @Data
     public static class Jwt {
 
-        /** claim 'iss' esperado en el token — URL del realm de Keycloak/RedHat SSO */
+        /** Expected 'iss' claim in the token — Keycloak/Red Hat SSO realm URL */
         private String issuer;
 
-        /** claim 'aud' esperado en el token. Null o vacío = no se valida */
+        /** Expected 'aud' claim in the token. Null or empty = validation disabled */
         private String audience;
 
-        /** URI del endpoint JWKS. Si no se configura se infiere del issuer. */
+        /** JWKS endpoint URI. If not configured, it is inferred from the issuer. */
         private String jwksUri;
 
-        /** TTL de las claves en caché. Default: 1 hora */
+        /** TTL for cached keys. Default: 1 hour */
         private Duration jwksTtl = Duration.ofHours(1);
     }
 
     /**
-     * Construye el JWKS URI a partir del issuer si no se configura explícitamente.
+     * Builds the JWKS URI from the issuer if not explicitly configured.
      */
     public String resolveJwksUri() {
         if (jwt.getJwksUri() == null || jwt.getJwksUri().isBlank()) {
             throw new IllegalStateException(
-                    "sca.mcp.transport.auth.jwt.jwks-uri is required when auth is enabled. " +
+                    "keel.mcp.transport.auth.jwt.jwks-uri is required when auth is enabled. " +
                             "Note: jwks-uri is usually different from issuer (e.g. Keycloak appends " +
                             "/protocol/openid-connect/certs to the realm URL).");
         }

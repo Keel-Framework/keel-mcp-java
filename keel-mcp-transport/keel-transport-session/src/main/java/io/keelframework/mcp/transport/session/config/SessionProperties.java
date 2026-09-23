@@ -20,9 +20,9 @@ import java.time.Duration;
 
 
 /**
- * Propiedades configurables del servicio de sesión de transporte MCP.
+ * Configurable properties for the MCP transport session service.
  *
- * Ejemplo de configuración en el proyecto MCP Server:
+ * Example configuration in the MCP Server project:
  *
  * keel:
  *   transport:
@@ -35,8 +35,8 @@ import java.time.Duration;
 public record SessionProperties(
 
     /**
-     * Máximo de sesiones simultáneas permitidas.
-     * Protege contra sobrecarga del servidor MCP.
+     * Maximum number of concurrent sessions allowed.
+     * Protects the MCP server from overload.
      * Default: 500
      */
     int maxSessions,
@@ -48,8 +48,8 @@ public record SessionProperties(
     Duration timeout,
 
     /**
-     * Activa logging detallado de eventos de sesión.
-     * Solo para desarrollo — desactivar en producción.
+     * Enables detailed logging of session events.
+     * For development only — disable in production.
      * Default: false
      */
     boolean logEvents

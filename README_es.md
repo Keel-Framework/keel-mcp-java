@@ -2,7 +2,7 @@
 <img src="img/logo_keel_framework.png" width="480" alt="Keel">
 </h1>
 
-> **Reference architecture & Maven Archetype for building MCP servers** · Java 25 · Spring Boot 4
+> **Reference Architecture & Maven Archetype for Building MCP Servers** · Java 25 · Spring Boot 4
 ---
 ![Java](https://img.shields.io/badge/Java-25-orange?logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.6-6DB33F?logo=springboot)
@@ -137,22 +137,24 @@ Esta organización permite mantener una **clara separación de responsabilidades
 
 El framework se apoya, además, en **dependencias de terceros**, como **Spring AI, Spring Boot y Caffeine**, cuya gestión de versiones y compatibilidad se centraliza mediante el **Maven BOM (Bill of Materials)** del proyecto.
 
-Todos los módulos comparten el **Group ID** `io.github.ricardodlm.springai.mcp` y la **versión definida a nivel de proyecto**, garantizando una gestión de dependencias consistente dentro del stack.
+Todos los módulos comparten el **Group ID** `io.keelframework.mcp` y la **versión definida a nivel de proyecto**, garantizando una gestión de dependencias consistente dentro del stack.
 
-![Modulos](./img/mcp_modulos.png)
+![Modulos](./img/keelFramework_components.png)
 
-| **Módulo** | **Artefacto** | **Responsabilidad / Propósito** |
-|---|---|---|
-| 🏗️ **Parent / BOM** | `mcp-architecture-framework` | Gestión centralizada de **dependencias, versiones, plugins y propiedades comunes** del framework. |
-| 🔐 **Common · JWT** | `common-jwt` | Decodificación de **JWT**, verificación de firma y extracción de claims. |
-| 🔑 **Adapter · Auth IdP** | `adapter-auth-idp` | Integración con proveedores de identidad mediante **OIDC**, incluyendo **Red Hat SSO / Keycloak**, JWKS e introspección de tokens. |
-| ⚡ **Adapter · Cache** | `adapter-cache-caffeine` | Abstracción de caché local basada en **Caffeine**, con configuración de TTL y tamaño máximo. |
-| 🌐 **Adapter · REST Client** | `adapter-rest-client` | Cliente HTTP estandarizado y preconfigurado para el consumo de **APIs REST externas** desde las Tools MCP. |
-| 🛡️ **Transport · Auth** | `transport-auth-service` | Filtro Servlet responsable de aplicar **autenticación** sobre los endpoints MCP. |
-| 🔄 **Transport · Session** | `transport-session-service` | Gestión del contexto de sesión de transporte, incluyendo autenticación y `Mcp-Session-Id`, con mecanismos de **creación, validación y expiración**. |
-| 📡 **Transport · Streamable HTTP** | `transport-streamable-service` | Implementación del transporte MCP basado en **Streamable HTTP**, proporcionando el endpoint de comunicación entre clientes y servidores MCP. |
-| 🌍 **Transport · CORS** | `transport-cors-service` | Configuración y gestión de **CORS** para clientes MCP basados en navegador. |
-| 📊 **Observability** | `observability-logging` | Generación y estandarización de **logs estructurados** para facilitar la monitorización y trazabilidad del servidor MCP. |
+| **Módulo** | **Artefacto**                   | **Responsabilidad / Propósito** |
+|---|---------------------------------|---|
+| 🏗️ **Parent / BOM** | `keel-mcp-java`                 | Gestión centralizada de **dependencias, versiones, plugins y propiedades comunes** del framework. |
+| 🔐 **Common · JWT** | `keel-common-jwt`                    | Decodificación de **JWT**, verificación de firma y extracción de claims. |
+| ⚠️ **Common · Exceptions** | `keel-common-exceptions`             | Excepciones base y modelo de errores compartido por los distintos módulos del framework, incluyendo `McpToolException`. |
+| 🔑 **Adapter · Auth IdP** | `keel-adapter-auth-idp`              | Integración con proveedores de identidad mediante **OIDC**, incluyendo **Red Hat SSO / Keycloak**, JWKS e introspección de tokens. |
+| ⚡ **Adapter · Cache** | `keel-adapter-cache-caffeine`        | Abstracción de caché local basada en **Caffeine**, con configuración de TTL y tamaño máximo. |
+| 🌐 **Adapter · REST Client** | `keel-adapter-rest-client`           | Cliente HTTP estandarizado y preconfigurado para el consumo de **APIs REST externas** desde las Tools MCP. |
+| 🛡️ **Transport · Auth** | `keel-transport-auth`           | Filtro Servlet responsable de aplicar **autenticación** sobre los endpoints MCP. |
+| 🔄 **Transport · Session** | `keel-transport-session`        | Gestión del contexto de sesión de transporte, incluyendo autenticación y `Mcp-Session-Id`, con mecanismos de **creación, validación y expiración**. |
+| 📡 **Transport · Streamable HTTP** | `keel-transport-streamable-mvc` | Implementación del transporte MCP basado en **Streamable HTTP**, proporcionando el endpoint de comunicación entre clientes y servidores MCP. |
+| 🌍 **Transport · CORS** | `keel-transport-cors`                | Configuración y gestión de **CORS** para clientes MCP basados en navegador. |
+| 📊 **Observability** | `keel-observability-logging`         | Generación y estandarización de **logs estructurados** para facilitar la monitorización y trazabilidad del servidor MCP. |
+
 
 ### Estructura Maven del Framework
 
@@ -160,25 +162,38 @@ La estructura Maven de **Keel** organiza los diferentes componentes del framewor
 El proyecto se estructura a partir de un **POM padre / BOM**, que centraliza la gestión de dependencias, versiones, plugins y propiedades comunes, mientras que los módulos se agrupan en cuatro áreas principales: **Common**, **Adapters**, **Transport** y **Observability**.
 
 ```text
-keel-mcp-archetype/
-└── mcp-architecture-framework/          # POM padre / BOM
-    ├── common-architecture-fwk/
-    │   ├── common-jwt/
-    │   └── common-exceptions/
+keel-mcp-java/
     │
-    ├── adapters-architecture-fwk/
-    │   ├── adapter-auth-idp/
-    │   ├── adapter-cache-caffeine/
-    │   └── adapter-rest-client/
+    ├── keel-mcp-common/
+    │   ├── keel-common-jwt/
+    │   └── keel-common-exceptions/
     │
-    ├── transport-architecture-fwk/
-    │   ├── transport-auth-service/
-    │   ├── transport-cors-service/
-    │   ├── transport-session-service/
-    │   └── transport-streamable-service/
+    ├── keel-mcp-adapters/
+    │   ├── keel-adapter-auth-idp/
+    │   ├── keel-adapter-cache-caffeine/
+    │   └── keel-adapter-rest-client/
     │
-    └── observability-architecture-fwk/
-        └── observability-logging/
+    ├── keel-mcp-archetype/
+    │
+    ├── keel-mcp-archetype-installer/
+    │
+    ├── keel-mcp-transport/
+    │   ├── keel-transport-auth/
+    │   ├── keel-transport-cors/
+    │   ├── keel-transport-session/
+    │   └── keel-transport-streamable-mvc/
+    │
+    └── keel-mcp-observability/
+    │   └── keel-observability-logging/
+    │
+    └── README._en.md
+    │
+    └── README._es.md
+    │   
+    └── pom.xml   
+ 
+        
+        
 ```
 
 ### Requisitos del Framework
@@ -260,23 +275,53 @@ keel-mcp-archetype-installer-X.X.X.jar
 
 #### (2-2) Generar el Scaffolding
 
-Ejecuta el instalador proporcionando el nombre, versión y dominio del nuevo MCP Server:
+Ejecuta el instalador proporcionando el nombre, versión, dominio y groupId del nuevo MCP Server:
 
 ```bash
-java -jar keel-mcp-archetype-installer-X.X.X.jar <nombreMicroMCP> <versionMicro> <dominioProyecto>
+java -jar keel-mcp-archetype-installer-X.X.X.jar <nombre-mcp> <version-micro> <dominio-negocio> <groupId>
 ```
+
+| **Parámetro**     | **Descripción**                                            |
+|-------------------| ---------------------------------------------------------- |
+| `nombre-mcp`      | Nombre del proyecto MCP que se generará.                   |
+| `version-micro`   | Versión inicial del proyecto generado.                     |
+| `dominio-negocio` | Dominio o área funcional a la que pertenece el MCP Server. |
+| `groupId`         | GroupId Maven del proyecto generado (tu propio namespace en dominio inverso). |
+
 
 Por ejemplo:
 
 ```bash
-java -jar keel-mcp-archetype-installer-X.X.X.jar keel-sample 1.0.0 test
+$ java -jar keel-mcp-archetype-installer-1.0.0.jar mcp-petstore-sample 1.0.0 petstore io.keelframework.sample
+
+Downloaded from central: https://repo.maven.apache.org/maven2/archetype-catalog.xml (18 MB at 9.6 MB/s)
+[INFO] Archetype repository not defined. Using the one from [io.keelframework.mcp:keel-mcp-archetype:1.0.0] found in catalog local
+[INFO] ----------------------------------------------------------------------------
+[INFO] Using following parameters for creating project from Archetype: keel-mcp-archetype:1.0.0
+[INFO] ----------------------------------------------------------------------------
+[INFO] Parameter: groupId, Value: io.keelframework.sample
+[INFO] Parameter: artifactId, Value: mcp-petstore-sample
+[INFO] Parameter: version, Value: 1.0.0
+[INFO] Parameter: package, Value: io.keelframework.sample
+[INFO] Parameter: packageInPathFormat, Value: io/keelframework/sample
+[INFO] Parameter: package, Value: io.keelframework.sample
+[INFO] Parameter: micro, Value: mcppetstoresample
+[INFO] Parameter: domain, Value: petstore
+[INFO] Parameter: domainName, Value: petstore
+[INFO] Parameter: groupId, Value: io.keelframework.sample
+[INFO] Parameter: artifactId, Value: mcp-petstore-sample
+[INFO] Parameter: transport, Value: mvc
+[INFO] Parameter: version, Value: 1.0.0
+[INFO] Parameter: microName, Value: mcp-petstore-sample
+[INFO] Parameter: architectureVersion, Value: 1.0.0
+[INFO] Project created from Archetype in dir: \keel-testing\mcp-petstore-sample
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.402 s
+[INFO] ------------------------------------------------------------------------
 ```
 
-| **Parámetro**     | **Descripción**                                            |
-| ----------------- | ---------------------------------------------------------- |
-| `nombreMicroMCP`  | Nombre del proyecto MCP que se generará.                   |
-| `versionMicro`    | Versión inicial del proyecto generado.                     |
-| `dominioProyecto` | Dominio o área funcional a la que pertenece el MCP Server. |
 
 El instalador genera automáticamente la estructura base del **MCP Server**, incluyendo los módulos `_boot`, `_mcp`, `_model` y la configuración necesaria para comenzar el desarrollo.
 
@@ -298,25 +343,25 @@ El código fuente del framework permite acceder directamente a los módulos que 
 
 ```bash
 # Clone
-git clone https://github.com/ricardo07dlm/springai-mcp-archetype.git
+git clone https://github.com/Keel-Framework/keel-mcp-java.git
 # Navega hasta el framework y compila sus módulos:
-cd springai-mcp-archetype/mcp-architecture-framework
+cd keel-mcp-java
 # Build:
-mvn clean install
+mvn clean install -U
 ```
 #### (2-2) Generación del Scaffolding
 
 Para generar un nuevo **scaffolding de Keel para un MCP Server**, se requiere previamente el siguiente artefacto:
-`mcp-archetype-installer-X.X.X.jar`
+`keel-mcp-archetype-installer-X.X.X.jar`
 
 ```bash
 # Ejecuta el instalador desde directory proyecto   
-java -jar  c:\springai-mcp-archetype\mcp-architecture-framework\mcp-archetype-installer\target\mcp-archetype-installer-1.0.0.jar <nombreMicroMCP> <versionMicro> <dominioProyecto>
+java -jar  keel-mcp-archetype-installer-X.X.X.jar <nombre-mcp> <version-micro> <dominio-negocio> 
 ```
 Por ejemplo:
 
 ```bash
-java -jar  c:\springai-mcp-archetype\mcp-architecture-framework\mcp-archetype-installer\target\mcp-archetype-installer-1.0.0.jar keel-sample 1.0.0 test
+java -jar keel-mcp-archetype-installer-1.0.0.jar mcp-petstore-sample 1.0.0 petstore io.keelframework.sample
 ```
 
 ### Resultado de la Generación del Scaffolding
@@ -327,31 +372,32 @@ La siguiente salida muestra un ejemplo de ejecución del Maven Archetype, incluy
 
 
 ```bash
-
+Downloaded from central: https://repo.maven.apache.org/maven2/archetype-catalog.xml (18 MB at 9.6 MB/s)
+[INFO] Archetype repository not defined. Using the one from [io.keelframework.mcp:keel-mcp-archetype:1.0.0] found in catalog local
 [INFO] ----------------------------------------------------------------------------
-[INFO] Using following parameters for creating project from Archetype: mcp-server-archetype:1.0.0
+[INFO] Using following parameters for creating project from Archetype: keel-mcp-archetype:1.0.0
 [INFO] ----------------------------------------------------------------------------
-[INFO] Parameter: groupId, Value: io.github.ricardodlm.springai.mcp.test.mcppoc
-[INFO] Parameter: artifactId, Value: mcp-poc
+[INFO] Parameter: groupId, Value: io.keelframework.sample
+[INFO] Parameter: artifactId, Value: mcp-petstore-sample
 [INFO] Parameter: version, Value: 1.0.0
-[INFO] Parameter: package, Value: io.github.ricardodlm.springai.mcp.test.mcppoc
-[INFO] Parameter: packageInPathFormat, Value: io/github/ricardodlm/springai/mcp/test/mcppoc
-[INFO] Parameter: package, Value: io.github.ricardodlm.springai.mcp.test.mcppoc
-[INFO] Parameter: micro, Value: mcppoc
-[INFO] Parameter: domain, Value: test
-[INFO] Parameter: domainName, Value: test
-[INFO] Parameter: groupId, Value: io.github.ricardodlm.springai.mcp.test.mcppoc
-[INFO] Parameter: artifactId, Value: mcp-poc
+[INFO] Parameter: package, Value: io.keelframework.sample
+[INFO] Parameter: packageInPathFormat, Value: io/keelframework/sample
+[INFO] Parameter: package, Value: io.keelframework.sample
+[INFO] Parameter: micro, Value: mcppetstoresample
+[INFO] Parameter: domain, Value: petstore
+[INFO] Parameter: domainName, Value: petstore
+[INFO] Parameter: groupId, Value: io.keelframework.sample
+[INFO] Parameter: artifactId, Value: mcp-petstore-sample
 [INFO] Parameter: transport, Value: mvc
 [INFO] Parameter: version, Value: 1.0.0
-[INFO] Parameter: microName, Value: mcp-poc
+[INFO] Parameter: microName, Value: mcp-petstore-sample
 [INFO] Parameter: architectureVersion, Value: 1.0.0
-[INFO] Project created from Archetype in dir: C:\temp\prueba-installer\mcp-poc
+[INFO] Project created from Archetype in dir: \keel-testing\mcp-petstore-sample
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.580 s
-[INFO] Finished at: 2026-09-03T20:30:44+02:00
+[INFO] Total time:  5.402 s
+[INFO] Finished at: 2026-09-23T15:41:39+02:00
 [INFO] ------------------------------------------------------------------------
 ```
 El resultado es un nuevo proyecto MCP Server basado en la arquitectura de Keel, preparado para continuar con la configuración y el desarrollo de sus capacidades MCP.
@@ -361,49 +407,39 @@ El resultado es un nuevo proyecto MCP Server basado en la arquitectura de Keel, 
 Independientemente de la opción utilizada para obtener el scaffolding, una vez generado el proyecto:
 
 ```bash
-# Navigate to the project root directory
+# Navigate to the project root directory 
 cd <directory-root-install-project-mcp>
-
-# Build the project
-mvn clean install
 ```
-**Ejemplo práctico:**
 ```bash
-# Navigate to the project root directory
-cd  C:\temp\prueba-installer\mcp-poc
 # Build the project
-mvn clean install
-[INFO] --- maven-install-plugin:3.1.4:install (default-install) @ mcp-poc-boot ---
-[INFO] Installing C:\temp\prueba-installer\mcp-poc\mcp-poc-boot\.flattened-pom.xml to C:\Users\RLibera\.m2\repository\io\github\ricardodlm\springai\mcp\test\mcppoc\mcp-poc-boot\1.0.0\mcp-poc-boot-1.0.0.pom
-[INFO] Installing C:\temp\prueba-installer\mcp-poc\mcp-poc-boot\target\mcp-poc-boot-1.0.0.war to C:\Users\RLibera\.m2\repository\io\github\ricardodlm\springai\mcp\test\mcppoc\mcp-poc-boot\1.0.0\mcp-poc-boot-1.0.0.war
+mvn clean install -U
+
 [INFO] ------------------------------------------------------------------------
-[INFO] Reactor Summary for mcp-poc 1.0.0:
+[INFO] Reactor Summary for mcp-petstore-sample 1.0.0:
 [INFO]
-[INFO] mcp-poc ............................................ SUCCESS [  0.519 s]
-[INFO] mcp-poc-model ...................................... SUCCESS [  3.732 s]
-[INFO] mcp-poc-mcp ........................................ SUCCESS [  3.926 s]
-[INFO] mcp-poc-boot ....................................... SUCCESS [ 11.517 s]
+[INFO] mcp-petstore-sample ................................ SUCCESS [  2.143 s]
+[INFO] mcp-petstore-sample-model .......................... SUCCESS [ 13.131 s]
+[INFO] mcp-petstore-sample-mcp ............................ SUCCESS [  9.044 s]
+[INFO] mcp-petstore-sample-boot ........................... SUCCESS [ 15.537 s]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  20.118 s
-[INFO] Finished at: 2026-09-04T11:17:09+02:00
+[INFO] Total time:  40.382 s
+[INFO] Finished at: 2026-09-23T16:09:10+02:00
 [INFO] ------------------------------------------------------------------------
-```
-```bash
-# Navigate to the Spring Boot module
-cd <project-boot>
-# Run the application
-mvn spring-boot:run
-# Navigate to the Spring Boot module
-cd  C:\temp\prueba-installer\mcp-poc\mcp-poc-boot
-# Run the application
-mvn spring-boot:run
-```
-**Ejemplo práctico:**
 
+```
 ```bash
+# Navigate to the Spring Boot Module
+cd <directory-root-install-project-mcp>/-boot
+```
+```bash
+# Run the application
+\mcp-petstore-sample-boot
+mvn spring-boot:run
+
 [INFO] Attaching agents: []
+INFO] Attaching agents: []
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -413,9 +449,40 @@ mvn spring-boot:run
  =========|_|==============|___/=/_/_/_/
 
  :: Spring Boot ::                (v4.0.6)
-2026-09-04 11:20:43.976 INFO  [main] org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
-2026-09-04 11:20:44.053 INFO  [main] org.springframework.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
-2026-09-04 11:20:44.201 INFO  [main] io.github.ricardodlm.springai.mcp.test.mcppoc.Application - Started Application in 4.384 seconds (process running for 5.383)
+
+2026-09-23 16:13:49.918 INFO  [main] io.keelframework.sample.Application - The following 1 profile is active: "local"
+2026-09-23 16:13:50.959 INFO  [main] org.springframework.cloud.context.scope.GenericScope - BeanFactory id=8bec6352-6229-3720-a6b5-fe2cede6c401
+2026-09-23 16:13:51.248 WARN  [main] org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerAutoConfiguration' of type [org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected/applied to a currently created BeanPostProcessor [serverAnnotatedMethodBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies/advisors. If this bean does not have to be post-processed, declare it with ROLE_INFRASTRUCTURE.
+2026-09-23 16:13:51.252 WARN  [main] org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'serverAnnotatedBeanRegistry' of type [org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerAutoConfiguration$ServerMcpAnnotatedBeans] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected/applied to a currently created BeanPostProcessor [serverAnnotatedMethodBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies/advisors. If this bean does not have to be post-processed, declare it with ROLE_INFRASTRUCTURE.
+2026-09-23 16:13:51.255 WARN  [main] org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.commons.config.CommonsConfigAutoConfiguration' of type [org.springframework.cloud.commons.config.CommonsConfigAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected/applied to a currently created BeanPostProcessor [serverAnnotatedMethodBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies/advisors. If this bean does not have to be post-processed, declare it with ROLE_INFRASTRUCTURE.
+2026-09-23 16:13:51.258 WARN  [main] org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected/applied to a currently created BeanPostProcessor [serverAnnotatedMethodBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies/advisors. If this bean does not have to be post-processed, declare it with ROLE_INFRASTRUCTURE.
+2026-09-23 16:13:51.260 WARN  [main] org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'loadBalancerClientsDefaultsMappingsProvider' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x000000009f4ffaf8] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected/applied to a currently created BeanPostProcessor [serverAnnotatedMethodBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies/advisors. If this bean does not have to be post-processed, declare it with ROLE_INFRASTRUCTURE.
+2026-09-23 16:13:51.262 WARN  [main] org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'defaultsBindHandlerAdvisor' of type [org.springframework.cloud.commons.config.DefaultsBindHandlerAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected/applied to a currently created BeanPostProcessor [serverAnnotatedMethodBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies/advisors. If this bean does not have to be post-processed, declare it with ROLE_INFRASTRUCTURE.
+2026-09-23 16:13:51.265 WARN  [main] org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'spring.ai.mcp.server.annotation-scanner-org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerProperties' of type [org.springframework.ai.mcp.server.common.autoconfigure.annotations.McpServerAnnotationScannerProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected/applied to a currently created BeanPostProcessor [serverAnnotatedMethodBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies/advisors. If this bean does not have to be post-processed, declare it with ROLE_INFRASTRUCTURE.
+2026-09-23 16:13:51.630 INFO  [main] org.springframework.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-09-23 16:13:51.649 INFO  [main] org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-09-23 16:13:51.652 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-23 16:13:51.652 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-09-23 16:13:51.743 INFO  [main] org.springframework.boot.web.context.servlet.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1807 ms
+2026-09-23 16:13:52.157 INFO  [main] io.keelframework.mcp.adapters.rest.client.McpRestClientFactory - REST CLIENT FACTORY initialized socketTimeout=60000ms connectTimeout=60000ms requestTimeout=60000ms maxTotal=200 maxPerRoute=20 keepAlive=10000ms ssl=disabled
+2026-09-23 16:13:52.848 INFO  [main] org.springframework.ai.mcp.server.common.autoconfigure.McpServerAutoConfiguration - Enable tools capabilities, notification: true
+2026-09-23 16:13:52.951 WARN  [main] org.springframework.ai.mcp.annotation.provider.tool.SyncMcpToolProvider - No tool methods found in the provided tool objects: []
+2026-09-23 16:13:52.954 INFO  [main] org.springframework.ai.mcp.server.common.autoconfigure.McpServerAutoConfiguration - Registered tools: 1
+2026-09-23 16:13:52.954 INFO  [main] org.springframework.ai.mcp.server.common.autoconfigure.McpServerAutoConfiguration - Enable resources capabilities, notification: true
+2026-09-23 16:13:52.957 INFO  [main] org.springframework.ai.mcp.server.common.autoconfigure.McpServerAutoConfiguration - Enable resources templates capabilities, notification: true
+2026-09-23 16:13:52.960 INFO  [main] org.springframework.ai.mcp.server.common.autoconfigure.McpServerAutoConfiguration - Enable prompts capabilities, notification: true
+2026-09-23 16:13:52.963 INFO  [main] org.springframework.ai.mcp.server.common.autoconfigure.McpServerAutoConfiguration - Enable completions capabilities
+2026-09-23 16:13:53.244 WARN  [main] org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration -
+
+Using generated security password: 50932139-003d-488f-ac7c-08b197af0673
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-09-23 16:13:53.291 INFO  [main] org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-09-23 16:13:53.450 INFO  [main] org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 3 endpoints beneath base path '/actuator'
+2026-09-23 16:13:53.631 INFO  [main] org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-09-23 16:13:53.672 INFO  [main] org.springframework.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-09-23 16:13:53.695 INFO  [main] io.keelframework.sample.Application - Started Application in 5.106 seconds (process running for 6.176)
 ```
 
 #### Resumen del Proceso de Arranque
@@ -723,7 +790,6 @@ Cada módulo encapsula un ámbito técnico o funcional específico, favoreciendo
 | `_boot` | Módulo Maven | **Arranque y configuración del servidor** | Módulo ejecutable que contiene `Application.java`, `bootstrap.yml`, `application*.yml` y la configuración necesaria para el arranque de la aplicación. Puede empaquetarse como WAR desplegable mediante `ServletInitializer` o ejecutarse localmente como aplicación Spring Boot. |
 | `_mcp` | Módulo Maven | **Implementación de las capacidades MCP** | Contiene los componentes relacionados con el MCP Server, incluyendo **Tools, Resources y Prompts**, así como la lógica funcional expuesta mediante el protocolo MCP y los componentes necesarios para su integración con el framework. |
 | `_model` | Módulo Maven | **Modelo de dominio** | Contiene modelos, DTOs, entidades y *mappers* mediante **MapStruct**, así como las estructuras de datos y contratos utilizados por los diferentes módulos del proyecto. |
-| `DevOpsFile` | Carpeta | **Pipeline CI/CD** | Contiene los ficheros de configuración utilizados por el pipeline de despliegue, incluyendo parámetros específicos de CI/CD que no forman parte del proceso de compilación Maven. |
 
 **Ejemplo de Proyecto Generado por el scaffolding:**
 
@@ -737,13 +803,13 @@ Los módulos estándar definidos en el **Maven Archetype de Keel** utilizan iden
 
 Por ejemplo, para un proyecto denominado:
 
-- **Nombre del proyecto:** `sales-mcp-framework`
+- **Nombre del proyecto:** `keel-mcp-petstore-sample`
 
 Los módulos generados serán:
 
-- `sales-mcp-boot`
-- `sales-mcp-mcp`
-- `sales-mcp-model`
+- `petstore-sample-boot`
+- `petstore-sample-mcp`
+- `petstore-sample-model`
 
 De esta forma, se mantiene una **nomenclatura homogénea y estandarizada** para todos los proyectos generados a partir del **Maven Archetype de Keel**.
 
@@ -800,9 +866,6 @@ La siguiente estructura muestra los principales módulos, paquetes y ficheros ge
 │   └── mapper/
 │       └── HelloWorldItemMapper.java
 │
-└── DevOpsFiles/ CI/CD configuration
-    ├── deploymentProperties.json
-    └── pipelineArguments.json
 ```  
 ### Configuración YAML del MCP Server
 
@@ -812,14 +875,12 @@ Este fichero contiene la configuración principal de la aplicación y permite de
 
 Esta sección está dividida en **10 aspectos técnicos de configuración** que describen el propósito de cada bloque del **MCP Server generado por Keel**, proporcionando el contexto necesario para comprender qué controla cada propiedad antes de modificarla.
 
-#### (1-10) Configuración de la Identidad de la aplicación
+#### (1-9) Configuración de la Identidad de la aplicación
 
 La configuración del bloque `spring` define la identidad y el comportamiento base de la aplicación Spring Boot.
 
 ```yaml
 spring:
-  application:
-    name: keel-mcp-sample
   threads:
     virtual:
       enabled: true
@@ -828,11 +889,10 @@ spring:
 ```
 | Propiedad | Descripción |
 |---|---|
-| `spring.application.name` | Nombre lógico de la aplicación, usado en logs, métricas y trazas. |
 | `spring.threads.virtual.enabled` | Activa *Virtual Threads* (Java 21+). Cada request y cada invocación de Tool se ejecuta en un hilo virtual ligero, lo que mejora la escalabilidad bajo I/O intensivo (llamadas REST a backends) sin necesitar pools grandes de hilos de plataforma. |
 | `spring.main.web-application-type` | `servlet` fuerza el stack Servlet (Tomcat / WebMVC), coherente con el transporte Streamable HTTP síncrono. |
 
-#### (2-10) Configuración del Servidor MCP (Spring AI)
+#### (2-9) Configuración del Servidor MCP (Spring AI)
 
 El bloque `spring.ai.mcp.server` configura el comportamiento del servidor MCP y define el tipo de servidor, el protocolo de transporte y los mecanismos utilizados para registrar las capacidades MCP.
 
@@ -841,8 +901,6 @@ spring:
   ai:
     mcp:
       server:
-        name: keel-mcp-sample
-        version: 1.0.0
         type: SYNC
         protocol: STREAMABLE
         stdio:
@@ -862,7 +920,7 @@ spring:
 | `streamable-http.keep-alive-interval` | Cada 30 s se envía un ping para mantener viva la conexión con el cliente. |
 | `annotation-scanner.enabled` | Habilita el escaneo automático de beans anotados con `@McpTool`, `@McpResource`, `@McpPrompt` y `@McpComplete`. |
 
-#### (3-10) Configuración del servidor HTTP y TLS
+#### (3-9) Configuración del servidor HTTP y TLS
 
 El bloque `server` define el puerto HTTP utilizado por la aplicación y la configuración TLS del servidor.
 
@@ -878,7 +936,41 @@ server:
 | `server.port: 8080` | Puerto HTTP en el que escucha la aplicación. |
 | `server.ssl.enabled: false` | Deshabilita TLS directamente en Tomcat. En el entorno de despliegue, TLS puede terminar en una capa anterior como un Ingress, Load Balancer o API Gateway.|
 
-#### (4-10) Configuración del pool de conexiones HTTP (`adapter-rest-client`)
+#### (4-9) Configuración del Adaptador REST 
+
+El bloque `keel.adapters.rest-client:` configura el cliente REST utilizado por las Tools para comunicarse con servicios externos.
+
+```yaml
+keel:
+  adapters:
+    rest-client:
+      # ==========================================
+      # Keel Framework — RestClient Configuration
+      # Configuration: SSL / REST Services / HTTP Client
+      # ==========================================
+      ssl:
+        enabled: true
+        trust-store: ${TRUSTSTORE_LOCAL}
+        trust-store-password: ${TRUSTSTORE_PASSWORD}
+        trust-store-type: ${TRUSTSTORE_TYPE}
+
+      services: { }
+      # services:
+      #   name-service:
+      #     base-url:     https://api.ejemplo.sca.es
+      #     log-requests: true
+      http-client:
+        socket-timeout: 60000
+        connect-timeout: 60000
+        request-timeout: 60000
+        max-total-connections: 200
+        max-connections-per-route: 20
+        connection-time-to-live: 300000
+        keep-alive: 10000
+```
+
+`ssl` es la configuración TLS compartida por todas las llamadas salientes; `services.<nombre>` registra cada backend que las Tools pueden invocar a través de `McpRestClientFactory`. Cada servicio se identifica por su clave (`product`) y se resuelve por nombre desde el código.
+> La contraseña del truststore no debe tener valor por defecto en el YAML; inyéctala siempre por variable de entorno o secreto.
 
 El bloque `keel.mcp.httpclient` configura el cliente HTTP compartido utilizado por adapter-rest-client para realizar llamadas a servicios backend desde las Tools.
 
@@ -908,30 +1000,8 @@ Configura el pool de conexiones compartido que `adapter-rest-client` utiliza par
 
 > ⚠️ Ajusta los timeouts al SLA real de cada backend. Un timeout largo hace que una Tool quede bloqueada ese tiempo antes de fallar, y el cliente MCP percibe la latencia completa. Como referencia, `connect-timeout` rara vez necesita más de 5 s.
 
-#### (5-10) Configuración del Adaptador REST 
 
-El bloque `keel.mcp.adapters.rest` configura el cliente REST utilizado por las Tools para comunicarse con servicios externos.
-
-```yaml
-keel:
-  mcp:
-    adapters:
-      rest:
-        ssl:
-          enabled: true
-          trust-store: ${TRUSTSTORE_PATH:ssl/truststore.jks}
-          trust-store-password: ${TRUSTSTORE_PASSWORD}
-          trust-store-type: ${TRUSTSTORE_TYPE:JKS}
-        services:
-          product:
-            base-url: ${PRODUCT_SERVICE_URL:https://product.example.com/api}
-            log-requests: true
-```
-
-`ssl` es la configuración TLS compartida por todas las llamadas salientes; `services.<nombre>` registra cada backend que las Tools pueden invocar a través de `McpRestClientFactory`. Cada servicio se identifica por su clave (`product`) y se resuelve por nombre desde el código.
-> La contraseña del truststore no debe tener valor por defecto en el YAML; inyéctala siempre por variable de entorno o secreto.
-
-#### (6-10) Configuración de la autenticación JWT del transporte
+#### (5-9) Configuración de la autenticación JWT del transporte
 
 El bloque `keel.mcp.transport.auth` configura la autenticación de las peticiones dirigidas al MCP Server.
 
@@ -959,7 +1029,7 @@ keel:
 
 > ⚠️ La validación de audience debe configurarse de acuerdo con las políticas de seguridad del entorno. Una validación incompleta de los claims del JWT puede reducir el nivel de seguridad de la autenticació
 
-#### (6-10) Configuración de la gestión de sesión y transporte Streamable HTTP
+#### (6-9) Configuración de la gestión de sesión y transporte Streamable HTTP
 
 El bloque `keel.mcp.transport.session` configura la gestión de las sesiones MCP, mientras que `keel.mcp.transport.streamable` define parámetros específicos del canal Streamable HTTP.
 
@@ -971,11 +1041,6 @@ keel:
         max-sessions: 500
         session-timeout: 30m
         log-events: false
-      streamable:
-        endpoint: /mcp
-        keep-alive:
-          enabled: true
-          interval: 30s
 ```
 
 | Propiedad | Descripción |
@@ -983,11 +1048,9 @@ keel:
 | `session.max-sessions` | Límite de sesiones MCP concurrentes. Al alcanzarlo, las nuevas inicializaciones se rechazan. |
 | `session.session-timeout` | Una sesión sin actividad se cierra y se libera tras este tiempo. |
 | `session.log-events` | Registra en detalle los eventos de ciclo de vida de sesión (creación, validación, expiración). Útil en desarrollo. |
-| `streamable.endpoint` | Debe coincidir con `spring.ai.mcp.server.streamable-http.mcp-endpoint`. |
-| `streamable.keep-alive` | Keep-alive del canal de transporte gestionado por Keel. Si se activa junto con el de Spring AI, usa el mismo intervalo o desactiva uno de los dos. |
 
 
-#### (8-10) Configuración de la Observabilidad
+#### (7-9) Configuración de la Observabilidad
 
 El bloque `observability` controla la generación de logs estructurados asociados a los diferentes tipos de eventos del MCP Server.
 Logs JSON estructurados, activables por nivel mediante variables de entorno:
@@ -1008,13 +1071,13 @@ keel:
 | `functional` | Invocaciones de Tools MCP: nombre, argumentos, resultado y duración. |
 | `security` | Eventos de autenticación JWT y de gestión de sesiones. |
 
-#### (9-10) Configuración de la gestión de la caché
+#### (8-9) Configuración de la gestión de la caché
 
 El bloque `kell.mcp.cache` configura la caché local basada en `Caffeine` utilizada por los componentes de Keel.
 
 ```yaml
 keel:
-  mcp:
+  adapters:
     cache:
       expire-after-write: 30m
       expire-after-access: 30m
@@ -1029,7 +1092,7 @@ Por ese motivo sus valores deben estar alineados con los de sesión:
 - `maximum-size` ≥ `session.max-sessions`.
 - `record-stats` habilita las estadísticas de hit/miss, expuestas vía Actuator.
 
-#### (10-10) Configuración de Actuator y logging
+#### (9-9) Configuración de Actuator y logging
 
 El bloque `management` configura los endpoints de Spring Boot Actuator, mientras que el bloque logging establece los niveles de logging de la aplicación.
 
@@ -1089,88 +1152,33 @@ Toda Tool desarrollada sobre Keel debe seguir una estructura común que facilite
 El siguiente ejemplo muestra la estructura recomendada:
 
 ```java
-
-@Component
-public class ProductTools {
-
-    private static final String SERVICE = "product";   // clave declarada en keel.mcp.adapters.rest.services
-
-    private final McpRestClientFactory restClientFactory;
-    private final McpAuthLoggingHandler mcplog;        // permite generar trazas custom desde la Tool
-    private McpRestClient productClient;
-
-    public ProductTools(McpRestClientFactory restClientFactory, McpAuthLoggingHandler mcplog) {
-        this.restClientFactory = restClientFactory;
-        this.mcplog = mcplog;
-    }
-
-    @PostConstruct
-    void init() {
-        this.productClient = restClientFactory.getClient(SERVICE);
-    }
-
     @Tool(description = """
-        Busca un producto por su código identificador.
-        Usar cuando el usuario pregunte por un producto específico o mencione un ID.
-        Devuelve nombre, descripción, ramo y coberturas del producto.
+        Find a pet by its identifier.
+        Use when the user asks about a specific pet or mentions an ID.
+        Returns the pet's name, category and status.
         """)
-    public ProductoDTO.ProductResponse getProduct(
-            @ToolParam(description = "Código numérico del producto. Ejemplo: 1, 2, 3")
-            int productId) {
+    public PetstoreDTO.PetResponse findPet(
+        @ToolParam(description = "Numeric ID of the pet. Example: 1, 2, 3")
+        long petId) {
 
-        String path = "/product/" + productId;
-        long start = System.nanoTime();
-
-        try {
-            model.io.keelframework.mcp.adapters.rest.RestResponse<ProductoDTO.ProductResponse> response =
-                    productClient.get("/product/{id}", ProductoDTO.ProductResponse.class, productId);
-
-            mcplog.logTool(SERVICE, path, response.httpStatus(), elapsedMs(start));
-            return response.body();
-
-        } catch (RestClientException e) {
-            mcplog.logTool(SERVICE, path, 500, elapsedMs(start));
-            throw new McpToolException(SERVICE, path, 500,
-                    "No se pudo obtener el producto " + productId, e);
-        }
+      long start = System.nanoTime();
+      String path = "/pet/" + petId;
+      try {
+        RestResponse<PetstoreDTO.PetResponse> response = petClient.get(
+                "/pet/{petId}", PetstoreDTO.PetResponse.class, petId);
+    
+        long durationMs = (System.nanoTime() - start) / 1_000_000;
+        mcplog.logTool(SERVICE_NAME, path, response.httpStatus(), durationMs);
+        return response.body();
+      }
+      catch (RestClientException e) {
+        long durationMs = (System.nanoTime() - start) / 1_000_000;
+        mcplog.logTool(SERVICE_NAME, path, 500, durationMs);
+        log.warn(PetstoreErrorsMsg.PET_NOT_FOUND_MSG, petId, path, e.getMessage());
+        throw new McpToolException(SERVICE_NAME, path, 500,
+                "Could not retrieve pet " + petId, e);
+      }
     }
-
-    @Tool(description = """
-        Registra un nuevo producto en el sistema.
-        Usar cuando el usuario quiera crear, añadir o registrar un nuevo producto.
-        Requiere nombre, descripción y ramo — solicitar al usuario si faltan.
-        Devuelve confirmación del registro con el ID asignado.
-        """)
-    public ProductoDTO.ProductResponse createProduct(
-            @ToolParam(description = "Nombre del producto. Obligatorio.")
-            String name,
-            @ToolParam(description = "Descripción detallada del producto. Mínimo 10 caracteres.")
-            String description,
-            @ToolParam(description = "Ramo al que pertenece. Ejemplo: Seguros Generales, Seguros de Vida.")
-            String ramo) {
-
-        String path = "/product/";
-        long start = System.nanoTime();
-        ProductoDTO.ProductRequest request = ProductoDTO.createFakePolicy(name, description, ramo);
-
-        try {
-            model.io.keelframework.mcp.adapters.rest.RestResponse<ProductoDTO.ProductResponse> response =
-                    productClient.post(path, request, ProductoDTO.ProductResponse.class);
-
-            mcplog.logTool(SERVICE, path, response.httpStatus(), elapsedMs(start));
-            return response.body();
-
-        } catch (RestClientException e) {
-            mcplog.logTool(SERVICE, path, 500, elapsedMs(start));
-            throw new McpToolException(SERVICE, path, 500,
-                    "No se pudo registrar el producto '" + name + "'", e);
-        }
-    }
-
-    private static long elapsedMs(long startNanos) {
-        return (System.nanoTime() - startNanos) / 1_000_000;
-    }
-}
 ```
 ### Obtener el RestClient en la Tool
 
@@ -1260,79 +1268,24 @@ Todo Prompt desarrollado sobre Keel debe seguir una estructura común que facili
 El siguiente ejemplo muestra la estructura recomendada:
 
 ```java
-
-@Component
-public class ProductPrompts {
-
     @McpPrompt(
-            name = "buscar-producto",
-            description = """
-                Guía la consulta del detalle de un producto a partir de su código.
-                Usar cuando el usuario quiera información detallada de un producto específico.
-                """)
-    public McpSchema.GetPromptResult buscarProducto(
-            @McpArg(name = "productId",
-                    description = "Código numérico del producto. Ejemplo: 1, 2, 3",
-                    required = true)
-            String productId) {
-
-        String instructions = """
-                Invoca la Tool `getProduct` con el ID %s.
-                Devuelve la información completa del producto:
-                - Nombre
-                - Descripción
-                - Ramo
-                - Coberturas disponibles
-                Si la Tool devuelve error o el producto no existe, indícalo claramente y no inventes datos.
-                """.formatted(productId);
-
+            name = "petstore-find-pet",
+            description = "Template for looking up a pet by its ID. " +
+                    "Use when the user wants full details about one specific pet."
+    )
+    public McpSchema.GetPromptResult findPetPrompt(
+            @McpArg(description = "Numeric ID of the pet. Example: 1, 2, 3")
+            String petId) {
         return new McpSchema.GetPromptResult(
-                "Buscar producto por ID",
-                List.of(new McpSchema.PromptMessage(
-                        McpSchema.model.io.keelframework.mcp.common.jwt.Role.USER,
-                        new McpSchema.TextContent(instructions))));
+                "Look up a pet by ID",
+                List.of(
+                        new McpSchema.PromptMessage(
+                                McpSchema.Role.USER,
+                                new McpSchema.TextContent(
+                                        "Give me the full details of the pet with ID " + petId + ".\n" +
+                                                "Include its name, category and current status."))
+                ));
     }
-
-    @McpPrompt(
-            name = "registrar-producto",
-            description = """
-                Guía el flujo de alta de un nuevo producto: validación de datos, confirmación con el usuario y registro.
-                Usar cuando el usuario quiera crear, añadir o registrar un nuevo producto.
-                """)
-    public McpSchema.GetPromptResult registrarProducto(
-            @McpArg(name = "name",
-                    description = "Nombre del producto. Texto, debe ser único en el sistema. Ejemplo: Seguro Hogar Plus",
-                    required = true)
-            String name,
-            @McpArg(name = "description",
-                    description = "Descripción detallada del producto. Texto, mínimo 10 caracteres.",
-                    required = true)
-            String description,
-            @McpArg(name = "ramo",
-                    description = "Ramo al que pertenece. Ejemplo: Seguros Generales, Seguros de Vida.",
-                    required = true)
-            String ramo) {
-
-        String instructions = """
-                Quiero registrar un nuevo producto con los siguientes datos:
-                - Nombre:      %s
-                - Descripción: %s
-                - Ramo:        %s
-
-                Sigue estos pasos en orden:
-                1. Valida que la descripción tiene al menos 10 caracteres. Si no, pide al usuario que la amplíe y no continúes.
-                2. Muestra al usuario los datos y pide confirmación explícita antes de registrar.
-                3. Si el usuario confirma, invoca la Tool `createProduct` con nombre, descripción y ramo.
-                4. Informa al usuario del resultado indicando el ID asignado. Si la Tool devuelve error, explica el motivo y no reintentes sin confirmación.
-                """.formatted(name, description, ramo);
-
-        return new McpSchema.GetPromptResult(
-                "Registrar nuevo producto",
-                List.of(new McpSchema.PromptMessage(
-                        McpSchema.model.io.keelframework.mcp.common.jwt.Role.USER,
-                        new McpSchema.TextContent(instructions))));
-    }
-}
 ```
 ### Desarrollo de Resources MCP
 
@@ -1371,47 +1324,43 @@ Todo Resource desarrollado sobre Keel debe seguir una estructura común que faci
 El siguiente ejemplo muestra la estructura recomendada:
 
 ```java
-@Component
-public class ProductResources {
-
-    private static final String RULES_URI = "keel://product/registration-rules";
-    private static final String TEXT_PLAIN = "text/plain";
-
-    private static final String REGISTRATION_RULES = """
-            REGLAS PARA REGISTRAR UN NUEVO PRODUCTO
-            ═══════════════════════════════════════
-
-            CAMPOS OBLIGATORIOS:
-            - Nombre:      texto no vacío. El backend rechaza nombres duplicados.
-            - Descripción: detallada, mínimo 10 caracteres.
-            - Ramo:        ramo al que pertenece el producto.
-
-            PROCESO DE VALIDACIÓN:
-            1. Verificar que el nombre no está vacío.
-            2. Verificar que la descripción tiene al menos 10 caracteres.
-            3. Verificar que el ramo no está vacío.
-            4. Si todo es correcto, proceder con el registro invocando la Tool `createProduct`.
-            5. Si algún campo no cumple, informar al usuario del motivo y no registrar.
-
-            REGLAS DE USO:
-            1. Si faltan parámetros, solicítalos al usuario antes de registrar.
-            2. Confirma los datos con el usuario antes de invocar la Tool.
-            3. Responde siempre en español.
-            """;
-
     @McpResource(
-            uri = RULES_URI,
-            name = "product-registration-rules",
-            mimeType = TEXT_PLAIN,
-            description = """
-                Reglas de negocio para el alta de un nuevo producto: campos obligatorios, validaciones y normas de uso.
-                Consultar antes de validar los datos del usuario o de invocar la Tool createProduct.
-                """)
-    public McpSchema.ReadResourceResult getProductRegistrationRules() {
-        return new McpSchema.ReadResourceResult(
-                List.of(new McpSchema.TextResourceContents(RULES_URI, TEXT_PLAIN, REGISTRATION_RULES)));
+            uri = "petstore://tools-guide",
+            name = "Petstore tools guide",
+            description = "Describes when and how to use each available Petstore tool. " +
+                    "Consult when the LLM needs to decide which tool to call.",
+            mimeType = "text/plain"
+    )
+    public String toolsGuide() {
+        return """
+                AVAILABLE TOOLS IN petstore-sample:
+ 
+                1. findPet(petId)
+                   - When to use:  the user asks about a specific pet or gives an ID
+                   - Parameters:   petId (long) — numeric identifier of the pet
+                   - Example:      "What's the status of pet 5?"
+                   - Returns:      id, name, category and status of the pet
+ 
+                2. listPets(status)
+                   - When to use:  the user wants to browse pets by availability
+                   - Parameters:   status (String) — one of: available, pending, sold
+                   - Example:      "Show me all available pets"
+                   - Returns:      a list of pets matching that status, plus the total count
+ 
+                3. registerPet(name, category, status)
+                   - When to use:  the user wants to add a new pet to the store
+                   - Parameters:   name (String), category (String), status (String, one of:
+                                   available, pending, sold)
+                   - Example:      "Register a new dog named Rex, available"
+                   - Returns:      the newly registered pet, including its assigned ID
+ 
+                GENERAL RULES:
+                - Never invent pet data — always use the tools for real information
+                - If a required parameter is missing, ask the user before calling the tool
+                - "status" only accepts: available, pending, sold — reject anything else
+                  and ask the user to pick one of these three values
+                """;
     }
-}
 ```
 Este Resource es de origen **estático**: su contenido está definido en código y no cambia entre invocaciones. Para un Resource **dinámico** (por ejemplo, el catálogo de ramos vigentes), el método obtendría el contenido del backend mediante `McpRestClient` en cada lectura, manteniendo la misma estructura de respuesta.
 

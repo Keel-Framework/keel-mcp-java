@@ -16,13 +16,13 @@
 package io.keelframework.mcp.transport.session.exception;
 
 /**
- * Excepción base del servicio de sesión de transporte MCP.
+ * Base exception for the MCP transport session service.
  *
- * Jerarquía:
+ * Hierarchy:
  * TransportSessionException
- * ├── SessionNotFoundException     → sesión no existe o expiró
- * ├── SessionExpiredException      → sesión TTL expirado
- * └── SessionCreationException     → error al crear sesión
+ * ├── SessionNotFoundException  → session does not exist or has expired
+ * ├── SessionExpiredException   → session TTL has expired
+ * └── SessionCreationException  → error while creating the session
  */
 public sealed class SessionException extends RuntimeException
         permits SessionException.SessionNotFoundException,

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Record inmutable con los claims extraídos del JWT ya validado.
+ * Immutable record containing the claims extracted from the validated JWT.
  */
 public record JwtClaims(
 

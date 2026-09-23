@@ -30,19 +30,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.servlet.DispatcherType;
 /**
- * Auto-configuración CORS para el endpoint MCP Streamable HTTP.
- * Se activa únicamente si {@code keel.mcp.transport.cors.enabled=true}.
+ * CORS auto-configuration for the MCP Streamable HTTP endpoint.
+ * Enabled only when {@code keel.mcp.transport.cors.enabled=true}.
  *
- * IMPORTANTE: se registra explícitamente como FilterRegistrationBean con
- * DispatcherType.ASYNC incluido. El endpoint /mcp usa dispatch asíncrono
- * (Streamable HTTP), y el mecanismo estándar de Spring MVC
- * (WebMvcConfigurer.addCorsMappings) delega en un filtro que extiende
- * OncePerRequestFilter, el cual por defecto NO se re-ejecuta en el
- * redispatch async — resultando en respuestas reales sin el header
- * Access-Control-Allow-Origin, aunque el preflight OPTIONS sí lo tenga.
+ * IMPORTANT: explicitly registered as a FilterRegistrationBean with
+ * DispatcherType.ASYNC included. The /mcp endpoint uses asynchronous
+ * dispatching (Streamable HTTP), and the standard Spring MVC mechanism
+ * (WebMvcConfigurer.addCorsMappings) delegates to a filter extending
+ * OncePerRequestFilter, which by default is NOT re-executed on an
+ * async redispatch — resulting in actual responses without the
+ * Access-Control-Allow-Origin header, even though the preflight
+ * OPTIONS response includes it.
  *
- * Agnóstico de autenticación y sesión — únicamente controla qué orígenes
- * de navegador pueden interactuar con el endpoint MCP.
+ * Authentication- and session-agnostic — it only controls which
+ * browser origins can interact with the MCP endpoint.
  */
 
 @AutoConfiguration
@@ -100,8 +101,8 @@ public class McpCorsAutoConfiguration {
     }
 
     /**
-     * Convierte un Ant-style pattern (ej. "/mcp/**") al formato de
-     * servlet URL pattern esperado por FilterRegistrationBean (ej. "/mcp/*").
+     * Converts an Ant-style pattern (e.g. "/mcp/**") to the servlet URL pattern
+     * expected by FilterRegistrationBean (e.g. "/mcp/*").
      */
     private static String toUrlPattern(String antPattern) {
         return antPattern.endsWith("/**")

@@ -24,18 +24,18 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- * Autoconfiguracion del servicio de sesión de transporte MCP.
+ * Auto-configuration for the MCP transport session service.
  *
- * Se activa automáticamente cuando:
- * - transport-session-service.jar está en el classpath
- * - cache-service.jar está en el classpath (CacheServiceManager disponible)
-
- * Beans registrados:
- * - TransportSessionRepository → persiste en Cafeína via CacheServiceManager
- * - TransportSessionManager    → gestiona ciclo de vida de sesión
+ * Automatically enabled when:
+ * - transport-session-service.jar is on the classpath
+ * - cache-service.jar is on the classpath (CacheServiceManager available)
  *
- * El proyecto MCP Server NO necesita configuración extra.
- * Solo añade la dependencia en pom.xml y configura application.yml.
+ * Registered beans:
+ * - TransportSessionRepository → persists sessions using Caffeine via CacheServiceManager
+ * - TransportSessionManager    → manages the session lifecycle
+ *
+ * The MCP Server project requires no additional configuration.
+ * Simply add the dependency to pom.xml and configure application.yml.
  */
 
 @AutoConfiguration
@@ -44,8 +44,8 @@ import org.springframework.context.annotation.Bean;
 public class SessionAutoConfig {
 
     /**
-     * Repositorio de sesiones.
-     * Persiste en Cafeína via CacheServiceManager de cache-service.jar.
+     * Session repository.
+     * Persists sessions in Caffeine via CacheServiceManager from cache-service.jar.
      */
     @Bean
     @ConditionalOnMissingBean(SessionRepository.class)
@@ -55,8 +55,9 @@ public class SessionAutoConfig {
     }
 
     /**
-     * Gestor del ciclo de vida de sesiones.
-     * Expone -> create, validate, destroy para SSE, WS y Stdio/Local.
+     * Session lifecycle manager.
+     * Exposes create, validate, and destroy operations for SSE, WebSocket,
+     * and Stdio/Local transports.
      */
     @Bean
     @ConditionalOnMissingBean(SessionManager.class)

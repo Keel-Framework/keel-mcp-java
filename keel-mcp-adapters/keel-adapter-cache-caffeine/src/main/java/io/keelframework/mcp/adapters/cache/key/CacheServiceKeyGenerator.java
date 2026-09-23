@@ -20,9 +20,9 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
- * Generador estándar de claves de cache para el ecosistema MCP.
+ * Standard cache key generator for the MCP ecosystem.
  *
- * Formato de clave generada:
+ * Generated key format:
  * {SimpleClassName}:{methodName}:{param1}:{param2}:...
  *
  * @Cacheable(
@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
  * )
  * public TipoCambio obtenerTipoCambio(String moneda) { ... }
  *
- * Registrado como bean con nombre "cacheServiceKeyGenerator"
- * en CacheServiceConfig.
+ * Registered as a bean named "cacheServiceKeyGenerator"
+ * in CacheServiceConfig.
  */
 public final class CacheServiceKeyGenerator implements KeyGenerator {
 

@@ -43,17 +43,18 @@ import org.springframework.web.client.RestClient;
 import java.util.Set;
 
 /**
- * AutoConfiguration del módulo transport-auth-service.
+ * Auto-configuration for the transport-auth-service module.
  *
- * Se activa SOLO si sca.transport.auth.enabled=true.
- * Con enabled=false (default) el servidor MCP arranca sin autenticación —
- * Cadena de beans:
+ * Enabled ONLY when sca.transport.auth.enabled=true.
+ * With enabled=false (default), the MCP server starts without authentication.
+ *
+ * Bean chain:
  *   RestClient → JwksRemoteLoader → JwksKeyResolver → TokenValidator
  *        → TokenExtractor → McpAuthenticationFilter → SecurityFilterChain
  *
- * Los beans de validación JWT (JwksRemoteLoader, JwksKeyResolver, TokenValidator)
- * vienen de adapter-auth-idp. Los beans de Spring Security (filtro, cadena)
- * se definen aquí en transport-auth-service.
+ * JWT validation beans (JwksRemoteLoader, JwksKeyResolver, TokenValidator)
+ * are provided by adapter-auth-idp. Spring Security beans (filter and
+ * security filter chain) are defined here in transport-auth-service.
  */
 
 @AutoConfiguration

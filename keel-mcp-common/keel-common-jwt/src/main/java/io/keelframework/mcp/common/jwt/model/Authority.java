@@ -18,9 +18,9 @@ package io.keelframework.mcp.common.jwt.model;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
- * Adapta Role al contrato GrantedAuthority de Spring Security.
- * Permite que el SecurityContext funcione con las APIs estándar de Spring Security
- * sin acoplar el modelo interno a Spring.
+ * Adapts Role to Spring Security's GrantedAuthority contract.
+ * Allows the SecurityContext to work with standard Spring Security APIs
+ * without coupling the internal model to Spring.
  */
 public record Authority(Role role)  implements GrantedAuthority {
 

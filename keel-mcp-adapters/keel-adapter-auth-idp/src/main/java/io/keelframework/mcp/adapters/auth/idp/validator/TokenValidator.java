@@ -42,11 +42,11 @@ public class TokenValidator {
     private final String expectedAudience; // null = no se valida audience
 
     /**
-     * Valida el JWT y retorna un TokenValidationResult sellado.
-     * Nunca lanza excepción — los errores se modelan como Invalid.
+     * Validates the JWT and returns a sealed TokenValidationResult.
+     * Never throws an exception — errors are modeled as Invalid.
      *
-     * @param rawJwt token JWT en formato compacto
-     * @return Valid con JwtClaims, o Invalid con el motivo del rechazo
+     * @param rawJwt JWT token in compact format
+     * @return Valid with JwtClaims, or Invalid with the rejection reason
      */
     public TokenValidationResult validate(String rawJwt) {
         try {

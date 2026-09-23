@@ -24,21 +24,21 @@ public record CacheModel(
         long   estimatedSize
 ) {
     /**
-     * Instancia vacía cuando no hay estadísticas disponibles.
+     * Empty instance when no statistics are available.
      */
     public static CacheModel empty(String cacheName) {
         return new CacheModel(cacheName, 0L, 0L, 0.0, 0L, 0L);
     }
 
     /**
-     * Porcentaje de misses — complemento del hitRate.
+     * Miss percentage — complement of the hit rate.
      */
     public double missRate() {
         return 1.0 - hitRate;
     }
 
     /**
-     * Total de requests — hits + misses.
+     * Total number of requests — hits + misses.
      */
     public long totalRequests() {
         return hitCount + missCount;

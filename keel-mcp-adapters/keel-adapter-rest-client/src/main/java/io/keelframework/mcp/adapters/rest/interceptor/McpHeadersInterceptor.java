@@ -30,24 +30,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.io.IOException;
 
 /**
- * Interceptor de RestClient que propaga headers estandar SCA.
+ * RestClient interceptor that propagates standard headers.
  *
- * TRANSPARENTE para el desarrollador — registrado automaticamente
- * via RestClientAutoConfig. No requiere configuracion.
+ * TRANSPARENT to the developer — automatically registered
+ * via RestClientAutoConfig. No configuration required.
  *
- * En cada request HTTP saliente añade:
+ * Adds the following headers to every outbound HTTP request:
  *
- * 1. Authorization: Bearer <JWT>   ← JWT del cliente MCP SIEMPRE
+ * 1. Authorization: Bearer <JWT>   ← JWT from the MCP client, ALWAYS
  *
- * 2. Headers de propagacion SCA (desde MDC):
- *    - channel          ← canal de origen
- *    - applicationid    ← ID de aplicacion
- *    - traceid          ← ID de traza distribuida
- *    - spanid           ← ID de span
- *    - x-adeslas-device ← dispositivo del cliente
+ * 2. SCA propagation headers (from MDC):
+ *    - channel          ← source channel
+ *    - applicationid    ← application ID
+ *    - traceid          ← distributed trace ID
+ *    - spanid           ← span ID
  *
- * Los valores se extraen del MDC que fue poblado por el
- * filtro/interceptor del servidor MCP al recibir el request.
+ * Values are extracted from the MDC populated by the
+ * MCP Server filter/interceptor when the request is received.
  */
 public class McpHeadersInterceptor implements ClientHttpRequestInterceptor {
 
@@ -92,14 +91,10 @@ public class McpHeadersInterceptor implements ClientHttpRequestInterceptor {
     }
 
 
-    // ================================================
-    // PRIVADO
-    // ================================================
-
     /**
-     * Extrae el raw JWT del SecurityContextHolder.
-     * El JwtAuthenticationFilter ya lo validó y guardó
-     * en credentials del Authentication.
+     * Extracts the raw JWT from the SecurityContextHolder.
+     * The JwtAuthenticationFilter has already validated it and stored it
+     * in the Authentication credentials.
      */
     private String extractJwt() {
         Authentication authentication =

@@ -16,13 +16,13 @@
 package io.keelframework.mcp.adapters.rest.model;
 
 /**
- * Respuesta tipada de una peticion REST.
+ * Typed response for a REST request.
  *
- * Encapsula el resultado de una llamada HTTP:
- * - ok(body)     → peticion success con body
- * - error(msg)   → peticion fallida con mensaje
+ * Encapsulates the result of an HTTP call:
+ * - ok(body)   → successful request with body
+ * - error(msg) → failed request with message
  *
- * Uso en tools MCP:
+ * Usage in MCP tools:
  * RestResponse<String> response = client.get("/policy/123");
  * if (response.success()) {
  *     return response.body();

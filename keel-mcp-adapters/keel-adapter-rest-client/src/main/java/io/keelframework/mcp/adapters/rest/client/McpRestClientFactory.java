@@ -45,22 +45,22 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Factoría de McpRestClient por servicio.
+ * McpRestClient factory per service.
  *
- * Configura cada cliente con:
+ * Configures each client with:
  *
- * 1. Apache HttpClient 5 con pool de conexiones
+ * 1. Apache HttpClient 5 with connection pooling
  *    (architecture.httpclient.*)
  *    - socketTimeout, connectTimeout, requestTimeout
  *    - maxTotalConnections, maxConnectionsPerRoute
- *    - keepAlive strategy
+ *    - keep-alive strategy
  *
- * 2. SSL/TLS corporativo
+ * 2. Corporate SSL/TLS
  *    (server.ssl.*)
  *    - trustStore, trustStorePassword, trustStoreType
  *
- * 3. McpHeadersInterceptor — automatico e invisible al desarrollador
- *    - Authorization: Bearer <JWT>   ← SIEMPRE
+ * 3. McpHeadersInterceptor — automatic and transparent to the developer
+ *    - Authorization: Bearer <JWT>   ← ALWAYS
  *    - channel, applicationid, traceid, spanid, x-adeslas-device
  */
 public final class McpRestClientFactory {

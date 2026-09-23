@@ -21,7 +21,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.List;
 
 /**
- * Propiedades de configuración CORS para el endpoint MCP.
+ * CORS configuration properties for the MCP endpoint.
  *
  * <pre>
  * keel:
@@ -43,39 +43,39 @@ import java.util.List;
 @ConfigurationProperties(prefix = "keel.mcp.transport.cors")
 public class TransportCorsProperties {
 
-    /** Activa o desactiva la configuración CORS para el endpoint MCP. Default: false */
+    /** Enables or disables CORS configuration for the MCP endpoint. Default: false */
     private boolean enabled = false;
 
-    /** Patrón de ruta al que se aplica CORS. Default: /mcp/** */
+    /** Path pattern to which CORS applies. Default: /mcp/** */
     private String pathPattern = "/mcp/**";
 
     /**
-     * Orígenes permitidos (protocolo + host + puerto, sin path).
-     * Soporta patrones (ej. "https://*.keel.es") vía allowedOriginPatterns.
-     * Obligatorio si enabled = true.
+     * Allowed origins (scheme + host + port, without path).
+     * Supports patterns (e.g. "https://*.keel.es") via allowedOriginPatterns.
+     * Required when enabled = true.
      */
     private List<String> allowedOrigins = List.of();
 
-    /** Métodos HTTP permitidos. Default: GET, POST, OPTIONS */
+    /** Allowed HTTP methods. Default: GET, POST, OPTIONS */
     private List<String> allowedMethods = List.of("GET", "POST", "OPTIONS");
 
-    /** Headers de request permitidos. Default: todos ("*") */
+    /** Allowed request headers. Default: all ("*") */
     private List<String> allowedHeaders = List.of("*");
 
     /**
-     * Headers de response expuestos al JavaScript del navegador.
-     * IMPORTANTE: debe incluir "Mcp-Session-Id", o el cliente MCP en el
-     * navegador no podrá leer el session-id devuelto en el initialize.
+     * Response headers exposed to browser JavaScript.
+     * IMPORTANT: must include "Mcp-Session-Id", otherwise the browser-based
+     * MCP client cannot read the session ID returned during initialization.
      */
     private List<String> exposedHeaders = List.of("Mcp-Session-Id");
 
     /**
-     * Permite el envío de credenciales (cookies, Authorization header).
-     * Si es true, allowedOrigins NO puede contener "*" literal — usar
-     * orígenes explícitos o patrones.
+     * Allows credentials to be sent (cookies, Authorization header).
+     * If true, allowedOrigins cannot contain the literal "*" — use
+     * explicit origins or patterns instead.
      */
     private boolean allowCredentials = true;
 
-    /** Tiempo en segundos que el navegador cachea la respuesta del preflight. Default: 3600 */
+    /** Time in seconds that the browser caches the preflight response. Default: 3600 */
     private long maxAge = 3600;
 }

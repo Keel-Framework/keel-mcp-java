@@ -16,7 +16,7 @@
 package io.keelframework.mcp.common.jwt.provider;
 
 /**
- * Contrato para obtener el JWT del contexto de la request actual.
+ * Contract for retrieving the JWT from the current request context.
  */
 public interface JwtProvider {
     String getJwt();

@@ -21,15 +21,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 
 /**
- * Extrae el clientId (subject) del Authentication del SecurityContext.
+ * Extracts the clientId (subject) from the Authentication in the SecurityContext.
  *
- * Uso en StreamableController:
+ * Usage in StreamableController:
  *   Authentication auth = SecurityContextHolder.getContext().getAuthentication();
  *   String clientId = ClientIdExtractor.extract(auth);
  *
- * El controller no necesita conocer McpAuthenticationToken ni Jwt directamente.
+ * The controller does not need to know about McpAuthenticationToken or Jwt.
  */
-
 public class ClientIdExtractor {
 
     private static final Logger log = LoggerFactory.getLogger(ClientIdExtractor.class);
@@ -83,10 +82,10 @@ public class ClientIdExtractor {
     }
 
     /**
-     * Extrae el Jwt completo del Authentication.
-     * Útil cuando el controller necesita más que el subject (roles, scopes, etc.)
+     * Extracts the complete Jwt from the Authentication.
+     * Useful when the controller needs more than the subject (roles, scopes, etc.).
      *
-     * @return Jwt completo, o null si no hay McpAuthenticationToken
+     * @return the complete Jwt, or null if no McpAuthenticationToken is present
      */
     public static Jwt extractJwt(Authentication authentication) {
         if (authentication instanceof McpAuthenticationToken mcpToken) {

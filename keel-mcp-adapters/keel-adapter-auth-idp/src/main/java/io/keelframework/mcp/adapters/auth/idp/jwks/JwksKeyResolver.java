@@ -29,8 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Resuelve RSAPublicKey a partir del kid del header JWT.
- * Caché interna propia  Implementada con ConcurrentHashMap + TTL por entrada.
+ * Resolves an RSAPublicKey from the {@code kid} in the JWT header.
+ * Maintains its own internal cache implemented with ConcurrentHashMap
+ * and a per-entry TTL.
  */
 @Slf4j
 public class JwksKeyResolver {
@@ -39,10 +40,10 @@ public class JwksKeyResolver {
     private final String jwksUri;
     private final Duration ttl;
 
-    /** Caché principal: kid → clave pública */
+    /** Main cache: kid → public key */
     private final ConcurrentHashMap<String, RSAPublicKey> keyCache = new ConcurrentHashMap<>();
 
-    /** TTL por entrada: kid → instante de expiración */
+    /** Per-entry TTL: kid → expiration timestamp */
     private final ConcurrentHashMap<String, Instant> expiryCache = new ConcurrentHashMap<>();
 
     /** Lock por kid para evitar stampede en cache miss simultáneo */
@@ -77,7 +78,6 @@ public class JwksKeyResolver {
             return Optional.of(keyCache.get(kid));
         }
 
-        // Cache MISS — bloqueo por kid para evitar stampede
         ReentrantLock lock = locks.computeIfAbsent(kid, k -> new ReentrantLock());
         lock.lock();
         try {
@@ -106,7 +106,6 @@ public class JwksKeyResolver {
     private boolean isCached(String kid) {
         Instant expiry = expiryCache.get(kid);
         if (expiry == null || Instant.now().isAfter(expiry)) {
-            // Expirado — limpiar entrada
             if (expiry != null) {
                 log.debug("Cache EXPIRED for kid: {}", kid);
                 keyCache.remove(kid);

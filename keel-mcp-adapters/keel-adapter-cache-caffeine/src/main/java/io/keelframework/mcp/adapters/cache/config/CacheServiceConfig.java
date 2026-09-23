@@ -29,22 +29,22 @@ import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 
 /**
- * Autoconfiguracion del starter de cache basado en Cafeína.
+ * Auto-configuration for the Caffeine-based cache starter.
  *
- * Se activa automáticamente cuando Cafeína está en el classpath.
- * El proyecto MCP Server no necesita ninguna configuración extra.
+ * Automatically enabled when Caffeine is available on the classpath.
+ * The MCP Server project requires no additional configuration.
  *
- * * Registrado en:
- *  * META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
-*/
+ * Registered in:
+ * META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+ */
 @AutoConfiguration
 @EnableCaching
 @EnableConfigurationProperties(CacheServiceProperties.class)
 @ConditionalOnClass(Caffeine.class)
 public class CacheServiceConfig {
     /**
-     * CacheManager basado en Cafeína.
-     * Solo se registra si no existe otro CacheManager en el contexto.
+     * Caffeine-based CacheManager.
+     * Registered only if no other CacheManager exists in the context.
      */
     @Bean
     @ConditionalOnMissingBean(CacheManager.class)
@@ -58,8 +58,8 @@ public class CacheServiceConfig {
     }
 
     /**
-     * Instancia de Cafeína con la configuración estándar del ecosistema.
-     * Solo se registra si no existe otra instancia en el contexto.
+     * Caffeine instance with the ecosystem's standard configuration.
+     * Registered only if no other instance exists in the context.
      */
     @Bean
     @ConditionalOnMissingBean(Caffeine.class)
@@ -68,8 +68,8 @@ public class CacheServiceConfig {
     }
 
     /**
-     * Gestor del ciclo de vida de cache.
-     * Provee operaciones estándar: get, put, evict, clear, stats.
+     * Cache lifecycle manager.
+     * Provides standard operations: get, put, evict, clear, and stats.
      */
     @Bean
     @ConditionalOnMissingBean(CacheServiceManager.class)
@@ -80,9 +80,9 @@ public class CacheServiceConfig {
     }
 
     /**
-     * Manejador estándar de errores de cache.
-     * GET fallido → warning, no excepción.
-     * PUT/EVICT/CLEAR fallido → CacheServiceException.
+     * Standard cache error handler.
+     * Failed GET → warning, no exception.
+     * Failed PUT/EVICT/CLEAR → CacheServiceException.
      */
     @Bean
     @ConditionalOnMissingBean(CacheServiceErrorHandler.class)
@@ -91,9 +91,9 @@ public class CacheServiceConfig {
     }
 
     /**
-     * Generador estándar de claves de cache.
-     * Formato: ClassName:methodName:param1:param2
-     * Sin colisiones entre distintos adapters del ecosistema.
+     * Standard cache key generator.
+     * Format: ClassName:methodName:param1:param2
+     * Prevents collisions between different adapters in the ecosystem.
      */
     @Bean("cacheServiceKeyGenerator")
     @ConditionalOnMissingBean(name = "cacheServiceKeyGenerator")
@@ -101,9 +101,6 @@ public class CacheServiceConfig {
         return new CacheServiceKeyGenerator();
     }
 
-    // ================================================
-    // Privado — construcción de Cafeína
-    // ================================================
 
     private Caffeine<Object, Object> buildCaffeine(CacheServiceProperties properties) {
 

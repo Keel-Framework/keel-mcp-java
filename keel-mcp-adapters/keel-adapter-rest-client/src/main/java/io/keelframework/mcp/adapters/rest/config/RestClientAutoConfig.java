@@ -28,16 +28,18 @@ import org.springframework.core.env.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * Autoconfiguracion del adaptador REST para tools MCP.
+ * Auto-configuration for the REST adapter for MCP tools.
  *
- * El desarrollador solo necesita:
- * 1. Añadir adapter-rest-client como dependencia
- * 2. Configurar servicios en application.yml:
- *    sca.adapters.rest.services.{nombre}.base-url
- * 3. Inyectar McpRestClientFactory en sus tools
+ * The developer only needs to:
+ * 1. Add the adapter-rest-client dependency
+ * 2. Configure services in application.yml:
+ *    sca.adapters.rest.services.{name}.base-url
+ * 3. Inject McpRestClientFactory into their tools
  *
- * Todo lo demas (JWT, headers SCA, pool, SSL) es automatico e invisible.
+ * Everything else (JWT, SCA headers, connection pool, SSL) is automatic
+ * and transparent to the developer.
  */
+
 @AutoConfiguration
 @EnableConfigurationProperties({
         RestClientProperties.class,
