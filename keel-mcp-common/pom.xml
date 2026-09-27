@@ -13,6 +13,7 @@
 
     <groupId>io.keelframework.mcp.common</groupId>
     <artifactId>keel-mcp-common</artifactId>
+    <name>Keel MCP Common</name>
     <packaging>pom</packaging>
 
     <modules>

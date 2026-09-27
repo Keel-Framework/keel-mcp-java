@@ -13,6 +13,7 @@
 
     <groupId>io.keelframework.mcp.observability</groupId>
     <artifactId>keel-mcp-observability</artifactId>
+    <name>Keel MCP Observability</name>
     <packaging>pom</packaging>
 
     <modules>

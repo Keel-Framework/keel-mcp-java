@@ -13,6 +13,7 @@
 
     <groupId>io.keelframework.mcp.adapters</groupId>
     <artifactId>keel-mcp-adapters</artifactId>
+    <name>Keel MCP Adapters</name>
     <packaging>pom</packaging>
 
     <modules>

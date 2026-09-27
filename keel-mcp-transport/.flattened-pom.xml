@@ -11,6 +11,7 @@
   <artifactId>keel-mcp-transport</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
+  <name>Keel MCP Transport</name>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
