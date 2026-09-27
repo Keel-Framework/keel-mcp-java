@@ -11,6 +11,7 @@
   <artifactId>keel-mcp-observability</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
+  <name>Keel MCP Observability</name>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>

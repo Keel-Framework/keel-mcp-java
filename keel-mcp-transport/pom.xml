@@ -13,6 +13,7 @@
 
     <groupId>io.keelframework.mcp.transport</groupId>
     <artifactId>keel-mcp-transport</artifactId>
+    <name>Keel MCP Transport</name>
     <packaging>pom</packaging>
 
     <modules>
